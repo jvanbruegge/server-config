@@ -5,8 +5,6 @@ in
 ''
 #!${stdenv.shell}
 
-set -o xtrace
-
 set -euo pipefail
 
 dir="$(mktemp -d)"
@@ -14,8 +12,10 @@ cd "$dir"
 
 mkdir nix
 
+# TODO add --net
 # shellcheck disable=2016
-unshare --pid --mount --fork --user --net --uts --cgroup --map-auto --map-root-user ${stdenv.shell} -c '
+unshare --pid --mount --fork --user  --uts --cgroup --map-auto --map-root-user ${stdenv.shell} -c '
+
 # See https://github.com/NixOS/nixpkgs/issues/42117#issuecomment-974194691
 PATH=$(echo "$PATH" | sed -e "s/\/run\/wrappers\/bin://g")
 
