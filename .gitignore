@@ -1,2 +1,3 @@
 .vagrant/
+.direnv/
 run.sh
