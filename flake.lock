@@ -40,16 +40,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1690718031,
-        "narHash": "sha256-zc1/zY7oQD7QS4oYGrrESVoMnYXLB1khVbhD8HAapoc=",
-        "owner": "jvanbruegge",
+        "lastModified": 1690630041,
+        "narHash": "sha256-gbnvqm5goS9DSKAqGFpq3398aOpwejmq4qWikqmQyRo=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0e6f015bae92b387ee5a8bd3c16ba9a7f9ea6b71",
+        "rev": "d57e8c535d4cbb07f441c30988ce52eec69db7a8",
         "type": "github"
       },
       "original": {
-        "owner": "jvanbruegge",
-        "ref": "haproxy-package",
+        "owner": "NixOS",
+        "ref": "nixos-23.05",
         "repo": "nixpkgs",
         "type": "github"
       }

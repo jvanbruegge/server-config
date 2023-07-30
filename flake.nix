@@ -2,7 +2,7 @@
   description = "Modules to run services in rootless containers";
 
   inputs = {
-    nixpkgs.url = "github:jvanbruegge/nixpkgs/haproxy-package";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -17,7 +17,7 @@
       nixosConfigurations = {
         vps = nixpkgs.lib.nixosSystem {
           inherit system;
-          modules = [ ./nodes/vps/default.nix ];
+          modules = [ ./nodes/vps/default.nix ./modules.nix ];
         };
       };
 
