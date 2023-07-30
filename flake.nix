@@ -2,8 +2,11 @@
   description = "Modules to run services in rootless containers";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
-    deploy-rs.url = "github:serokell/deploy-rs";
+    nixpkgs.url = "github:jvanbruegge/nixpkgs/haproxy-package";
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, deploy-rs }:
