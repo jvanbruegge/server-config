@@ -7,32 +7,46 @@
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, deploy-rs }:
+  outputs = { self, nixpkgs, deploy-rs, sops-nix }:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       system = "x86_64-linux";
+      defaultModules = [
+        ./modules.nix
+        sops-nix.nixosModules.sops
+      ];
     in {
       nixosConfigurations = {
-        vps = nixpkgs.lib.nixosSystem {
+        vpsDev = nixpkgs.lib.nixosSystem {
           inherit system;
-          modules = [ ./nodes/vps/default.nix ./modules.nix ];
+          modules = defaultModules ++ [
+            ./nodes/vps/default.nix
+            ./settings.dev.nix
+          ];
         };
       };
 
       devShells."${system}".default = pkgs.mkShell {
-        packages = [ deploy-rs.packages."${system}".default ];
+        packages = [
+          deploy-rs.packages."${system}".default
+          pkgs.sops
+        ];
       };
 
       deploy.nodes = {
-        vps = {
+        vpsDev = {
           sshUser = "root";
           hostname = "vps-dev";
           profiles = {
             system = {
               user = "root";
-              path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.vps;
+              path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.vpsDev;
             };
           };
         };
