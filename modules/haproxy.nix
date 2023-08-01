@@ -1,14 +1,35 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, domain, ... }:
 
 let
   cfg = config.services.haproxy;
+  indent = str: lib.strings.concatStringsSep "\n  " (lib.strings.splitString "\n" str);
+
+  stats = ''
+    frontend stats
+      mode http
+      bind 127.0.0.1:${builtins.toString cfg.stats.port}
+      stats enable
+      stats uri /
+      stats refresh 10s
+
+    backend stats
+      mode http
+      server stats 127.0.0.1:${builtins.toString cfg.stats.port}
+  '';
 
   haproxyCfg = pkgs.writeText "haproxy.conf" ''
     global
       # needed for hot-reload to work without dropping packets in multi-worker mode
       stats socket /run/haproxy/haproxy.sock mode 600 expose-fd listeners level user
 
-    ${cfg.config}
+    frontend http
+      mode http
+      bind *:80
+      ${if cfg.stats.enable then ''
+        use_backend stats if { hdr(host) -i ${cfg.stats.subdomain}.${domain} }
+      '' else ""}
+
+    ${if cfg.stats.enable then stats else ""}
   '';
 
 in
@@ -27,14 +48,32 @@ with lib;
         description = lib.mdDoc "HAProxy package to use.";
       };
 
-      config = mkOption {
-        type = types.lines;
-        description = lib.mdDoc ''
-          Contents of the HAProxy configuration file,
-          {file}`haproxy.conf`.
-        '';
+      stats = {
+        enable = mkEnableOption (lib.mdDoc "the stats page");
+
+        subdomain = mkOption {
+          type = types.str;
+          default = "stats";
+          description = lib.mdDoc "The subdomain to serve the stats from";
+        };
+
+        port = mkOption {
+          type = types.port;
+          default = 8404;
+          description = lib.mdDoc "The internal port to serve the stats from";
+        };
       };
     };
+
+    /*ingress = mkOption {
+      type = type.attrsOf (types.submodule {
+        options = {
+
+        };
+      });
+      default = {};
+      description = "Configure the reverse proxy to forward requests for a given domain";
+    };*/
   };
 
   config = mkIf cfg.enable {

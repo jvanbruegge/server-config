@@ -2,16 +2,14 @@
 {
   services.haproxy = {
     enable = true;
-    config = ''
-      frontend stats
-        mode http
-        bind *:8404
-        stats enable
-        stats uri /
-        stats refresh 10s
-        stats admin if LOCALHOST
-    '';
+    stats.enable = true;
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 443 8404 ];
+  /*services.certbot = {
+    enable = true;
+    port = 8888;
+    address = "127.0.0.1";
+  };*/
+
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
 }
