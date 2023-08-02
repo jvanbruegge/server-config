@@ -1,4 +1,4 @@
-{ config, lib, pkgs, domain, ... }:
+{ config, lib, pkgs, domain, email, ... }:
 
 let
   cfg = config.services.haproxy;
@@ -11,25 +11,55 @@ let
       stats enable
       stats uri /
       stats refresh 10s
-
-    backend stats
-      mode http
-      server stats 127.0.0.1:${builtins.toString cfg.stats.port}
   '';
+
+  domains = lib.strings.concatStringsSep "\n  " (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
+    use_backend ${name} if { hdr(host) -i ${c.subdomain}.${domain} }
+  '') config.ingress));
+
+  certbotDomains = lib.strings.concatStringsSep "\\\n  " (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
+    -d ${c.subdomain}.${domain}
+  '') config.ingress));
+
+  backends = lib.strings.concatStringsSep "\n" (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
+    backend ${name}
+      mode http
+      server ${name} ${c.address}:${builtins.toString c.port}
+  '') config.ingress));
+
+  certDirs = lib.strings.concatStringsSep " " (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
+    crt /etc/letsencrypt/live/${c.subdomain}.${domain}/fullchain.pem
+  '') config.ingress));
 
   haproxyCfg = pkgs.writeText "haproxy.conf" ''
     global
       # needed for hot-reload to work without dropping packets in multi-worker mode
       stats socket /run/haproxy/haproxy.sock mode 600 expose-fd listeners level user
+      log stdout format raw local0 info
+
+    defaults
+      log global
+      option httplog
+      timeout connect 5s
+      timeout client 50s
+      timeout server 50s
 
     frontend http
       mode http
       bind *:80
-      ${if cfg.stats.enable then ''
-        use_backend stats if { hdr(host) -i ${cfg.stats.subdomain}.${domain} }
-      '' else ""}
+      acl letsencrypt path_beg /.well-known/acme-challenge/
+      http-request redirect scheme https code 301 unless letsencrypt
+      use_backend certbot if letsencrypt
 
+    frontend https
+      mode http
+      bind *:443 ssl ${certDirs}
+      ${domains}
     ${if cfg.stats.enable then stats else ""}
+    ${backends}
+    backend certbot
+      mode http
+      server certbot 127.0.0.1:8403
   '';
 
 in
@@ -46,6 +76,24 @@ with lib;
         default = pkgs.haproxy;
         defaultText = literalExpression "pkgs.haproxy";
         description = lib.mdDoc "HAProxy package to use.";
+      };
+
+      letsencrypt = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable automatic certificate generation with letsencrypt";
+      };
+
+      user = mkOption {
+        type = types.str;
+        default = "haproxy";
+        description = lib.mdDoc "User account under which haproxy runs.";
+      };
+
+      group = mkOption {
+        type = types.str;
+        default = "haproxy";
+        description = lib.mdDoc "Group account under which haproxy runs.";
       };
 
       stats = {
@@ -65,21 +113,71 @@ with lib;
       };
     };
 
-    /*ingress = mkOption {
-      type = type.attrsOf (types.submodule {
+    ingress = mkOption {
+      type = types.attrsOf (types.submodule {
         options = {
-
+          subdomain = mkOption { type = types.str; };
+          letsencrypt = mkOption {
+            type = types.bool;
+            default = true;
+            description = "Enable automatic TLS certificates with letsencrypt";
+          };
+          address = mkOption {
+            type = types.str;
+            default = "127.0.0.1";
+            description = "Address of service to proxy to";
+          };
+          port = mkOption {
+            type = types.port;
+            default = 8080;
+            description = "Port of the service to proxy to";
+          };
         };
       });
       default = {};
       description = "Configure the reverse proxy to forward requests for a given domain";
-    };*/
+    };
   };
 
   config = mkIf cfg.enable {
-
     # configuration file indirection is needed to support reloading
     environment.etc."haproxy.cfg".source = haproxyCfg;
+
+    ingress.haproxy-stats = mkIf cfg.stats.enable {
+      subdomain = cfg.stats.subdomain;
+      port = cfg.stats.port;
+    };
+
+    systemd.services.certbot = mkIf cfg.letsencrypt {
+      description = "certbot";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = ''
+          ${lib.getExe pkgs.certbot} certonly --standalone \
+            --http-01-port 8403 --http-01-address 127.0.0.1 \
+            --non-interactive --keep --agree-tos --email ${email} \
+            ${certbotDomains}
+        '';
+        ExecStopPost = ''
+          ${pkgs.bash}/bin/bash -x -c 'for d in /etc/letsencrypt/live/*/; do ln -sf "''$''${d}privkey.pem" "''$''${d}fullchain.pem.key"; done'
+        '';
+        User = cfg.user;
+        Group = cfg.group;
+        NoNewPrivileges = true;
+        PrivateTmp = true;
+        ProtectHome = true;
+        ProtectSystem = "strict";
+        ProtectKernelTunables = true;
+        ProtectKernelModules = true;
+        ProtectControlGroups = true;
+        SystemCallFilter = "~@cpu-emulation @keyring @module @obsolete @raw-io @reboot @swap @sync";
+        StateDirectory = "letsencrypt";
+        LogsDirectory = "letsencrypt";
+        ConfigurationDirectory = "letsencrypt";
+      };
+    };
 
     systemd.services.haproxy = {
       description = "HAProxy";
@@ -104,9 +202,11 @@ with lib;
         KillMode = "mixed";
         SuccessExitStatus = "143";
         Restart = "always";
+        RestartSec = 3;
         RuntimeDirectory = "haproxy";
         # upstream hardening options
-        DynamicUser = true;
+        User = cfg.user;
+        Group = cfg.group;
         NoNewPrivileges = true;
         ProtectHome = true;
         ProtectSystem = "strict";
@@ -117,6 +217,17 @@ with lib;
         # needed in case we bind to port < 1024
         AmbientCapabilities = "CAP_NET_BIND_SERVICE";
       };
+    };
+
+    users.users = lib.optionalAttrs (cfg.user == "haproxy") {
+      haproxy = {
+        group = cfg.group;
+        isSystemUser = true;
+      };
+    };
+
+    users.groups = lib.optionalAttrs (cfg.group == "haproxy") {
+      haproxy = {};
     };
   };
 }

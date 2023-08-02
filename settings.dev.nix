@@ -12,21 +12,21 @@
     serveo_known_hosts = {};
   };
 
-  systemd.services.serveo = {
-    description = "SSH reverse tunnel";
-    after = [ "network.target" ];
+  systemd.services.tunnel = {
+    description = "SSH reverse tunnel for ports 80 and 443";
+    after = [ "network.target" "haproxy.service" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "simple";
       ExecStart = ''
-        ${pkgs.openssh}/bin/ssh ubuntu@${domain} \
+        ${pkgs.openssh}/bin/ssh root@${domain} \
           -i %d/id_rsa \
           -o ServerAliveInterval=60 \
           -o UserKnownHostsFile=%d/known_hosts \
-          -R 8080:localhost:80 \
-          sudo socat TCP-LISTEN:80,fork TCP:localhost:8080
+          -R :80:localhost:80 -R :443:localhost:443 -N
       '';
       Restart = "always";
+      RestartSec = 5;
       LoadCredential = [
         "id_rsa:/run/secrets/serveo_id_rsa"
         "known_hosts:/run/secrets/serveo_known_hosts"
