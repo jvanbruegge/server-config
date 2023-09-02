@@ -17,19 +17,14 @@ let
     use_backend ${name} if { hdr(host) -i ${c.subdomain}.${domain} }
   '') config.ingress));
 
-  certbotDomains = lib.strings.concatStringsSep "\\\n  " (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
-    -d ${c.subdomain}.${domain}
-  '') config.ingress));
+  certDomains = lib.attrsets.attrValues (builtins.mapAttrs (name: c: "${c.subdomain}.${domain}") config.ingress);
+  certbotDomains = lib.strings.concatMapStringsSep "\\\n  " (s: "-d ${s}") certDomains;
 
   backends = lib.strings.concatStringsSep "\n" (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
     backend ${name}
       mode http
       server ${name} ${c.address}:${builtins.toString c.port}
   '') config.ingress));
-
-  certDirs = lib.strings.concatStringsSep " " (lib.attrsets.attrValues (builtins.mapAttrs (name: c:
-    "crt /etc/letsencrypt/live/${c.subdomain}.${domain}/fullchain.pem"
-  ) config.ingress));
 
   haproxyCfg = pkgs.writeText "haproxy.conf" ''
     global
@@ -53,7 +48,7 @@ let
 
     frontend https
       mode http
-      bind *:443 ssl ${certDirs}
+      bind *:443 ssl crt /etc/letsencrypt/live/${domain}/fullchain.pem
       ${domains}
     ${if cfg.stats.enable then stats else ""}
     ${backends}
@@ -62,6 +57,22 @@ let
       server certbot 127.0.0.1:8403
   '';
 
+  certbotCmd = address: port: ''
+    ${lib.getExe pkgs.certbot} certonly --standalone --cert-name ${domain} \
+      --http-01-port ${builtins.toString port} --http-01-address ${address} \
+      --non-interactive --keep --agree-tos --email ${email} --expand \
+      ${certbotDomains}
+  '';
+
+  certbotScript = pkgs.writeScript "certbot.sh" ''
+    #!${pkgs.bash}/bin/bash
+    set -euo pipefail
+
+    if [ ! -f /etc/letsencrypt/live/${domain}/fullchain.pem.key ]; then
+      ${certbotCmd "0.0.0.0" 80}
+      ${pkgs.coreutils}/bin/ln -sf /etc/letsencrypt/live/${domain}/privkey.pem /etc/letsencrypt/live/${domain}/fullchain.pem.key
+    fi
+  '';
 in
 with lib;
 {
@@ -148,21 +159,15 @@ with lib;
       port = cfg.stats.port;
     };
 
-    systemd.services.certbot = mkIf cfg.letsencrypt {
+    systemd.services.certbot = mkIf /*cfg.letsencrypt*/ false {
       description = "certbot";
-      after = [ "network.target" ];
+      after = [ "network.target" "haproxy.service" ];
+      wants = [ "haproxy.service" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = ''
-          ${lib.getExe pkgs.certbot} certonly --standalone \
-            --http-01-port 8403 --http-01-address 127.0.0.1 \
-            --non-interactive --keep --agree-tos --email ${email} \
-            ${certbotDomains}
-        '';
-        ExecStopPost = ''
-          ${pkgs.bash}/bin/bash -x -c 'for d in /etc/letsencrypt/live/*/; do ln -sf "''$''${d}privkey.pem" "''$''${d}fullchain.pem.key"; done'
-        '';
+        ExecStart = certbotCmd "127.0.0.1" 8403;
+        Restart = "no";
         User = cfg.user;
         Group = cfg.group;
         NoNewPrivileges = true;
@@ -186,6 +191,8 @@ with lib;
       serviceConfig = {
         Type = "notify";
         ExecStartPre = [
+          # create certificate with certbot
+          "${pkgs.bash}/bin/bash -x ${certbotScript}"
           # when the master process receives USR2, it reloads itself using exec(argv[0]),
           # so we create a symlink there and update it before reloading
           "${pkgs.coreutils}/bin/ln -sf ${cfg.package}/sbin/haproxy /run/haproxy/haproxy"
@@ -208,12 +215,16 @@ with lib;
         User = cfg.user;
         Group = cfg.group;
         NoNewPrivileges = true;
+        PrivateTmp = true;
         ProtectHome = true;
         ProtectSystem = "strict";
         ProtectKernelTunables = true;
         ProtectKernelModules = true;
         ProtectControlGroups = true;
         SystemCallFilter= "~@cpu-emulation @keyring @module @obsolete @raw-io @reboot @swap @sync";
+        StateDirectory = "letsencrypt";
+        LogsDirectory = "letsencrypt";
+        ConfigurationDirectory = "letsencrypt";
         # needed in case we bind to port < 1024
         AmbientCapabilities = "CAP_NET_BIND_SERVICE";
       };

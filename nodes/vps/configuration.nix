@@ -4,6 +4,7 @@
     [ # Include the results of the hardware scan
       ./hardware-configuration.nix
       ../../services/haproxy.nix
+      ../../services/vaultwarden.nix
     ];
   boot = {
     loader.grub.enable = true;
