@@ -13,7 +13,7 @@ let
       stats refresh 10s
   '';
 
-  domains = lib.strings.concatStringsSep "\n  " (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
+  domains = lib.strings.concatStringsSep "  " (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
     use_backend ${name} if { hdr(host) -i ${c.subdomain}.${domain} }
   '') config.ingress));
 
@@ -27,9 +27,9 @@ let
       server ${name} ${c.address}:${builtins.toString c.port}
   '') config.ingress));
 
-  certDirs = lib.strings.concatStringsSep " " (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
-    crt /etc/letsencrypt/live/${c.subdomain}.${domain}/fullchain.pem
-  '') config.ingress));
+  certDirs = lib.strings.concatStringsSep " " (lib.attrsets.attrValues (builtins.mapAttrs (name: c:
+    "crt /etc/letsencrypt/live/${c.subdomain}.${domain}/fullchain.pem"
+  ) config.ingress));
 
   haproxyCfg = pkgs.writeText "haproxy.conf" ''
     global
