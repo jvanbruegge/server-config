@@ -5,6 +5,7 @@
       ./hardware-configuration.nix
       ../../services/haproxy.nix
       ../../services/vaultwarden.nix
+      ../../services/tandoor.nix
     ];
   boot = {
     loader.grub.enable = true;

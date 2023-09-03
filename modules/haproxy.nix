@@ -49,6 +49,7 @@ let
     frontend https
       mode http
       bind *:443 ssl crt /etc/letsencrypt/live/${domain}/fullchain.pem
+      http-request set-header X-Forwarded-Proto https
       ${domains}
     ${if cfg.stats.enable then stats else ""}
     ${backends}
@@ -68,7 +69,15 @@ let
     #!${pkgs.bash}/bin/bash
     set -euo pipefail
 
-    if [ ! -f /etc/letsencrypt/live/${domain}/fullchain.pem.key ]; then
+    all_good=true
+    output=$(${lib.getExe pkgs.certbot} certificates | grep Domains)
+    for d in ${lib.concatStringsSep " " certDomains}; do
+      if ! echo "$output" | grep -q $d; then
+        all_good=false
+        break
+      fi
+    done
+    if ! $all_good; then
       ${certbotCmd "0.0.0.0" 80}
       ${pkgs.coreutils}/bin/ln -sf /etc/letsencrypt/live/${domain}/privkey.pem /etc/letsencrypt/live/${domain}/fullchain.pem.key
     fi
