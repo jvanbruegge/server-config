@@ -15,4 +15,8 @@ if ! $SSH_COMMAND "echo 'SSH connection to server succeeded'"; then
     exit 1
 fi
 
-$SSH_COMMAND 'curl https://raw.githubusercontent.com/elitak/nixos-infect/c9419eb629f03b7abcc0322340b6aaefb4eb2b60/nixos-infect | NIX_CHANNEL=nixos-23.05 bash -x'
+$SSH_COMMAND 'curl https://raw.githubusercontent.com/elitak/nixos-infect/c9419eb629f03b7abcc0322340b6aaefb4eb2b60/nixos-infect | NIX_CHANNEL=nixos-23.11 bash -x'
+
+echo 'Waiting for server reboot'
+sleep 10
+pubkey=$($SSH_COMMAND 'cat /etc/ssh/ssh_host_ed25519_key.pub')
