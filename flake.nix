@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
+    nixpkgs-authentik.url = "github:jvanbruegge/nixpkgs/authentik";
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -13,7 +14,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, deploy-rs, sops-nix }:
+  outputs = inputs@{ self, nixpkgs, nixpkgs-authentik, deploy-rs, sops-nix }:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       system = "x86_64-linux";
@@ -25,6 +26,7 @@
       nixosConfigurations = {
         vpsDev = nixpkgs.lib.nixosSystem {
           inherit system;
+          specialArgs = inputs;
           modules = defaultModules ++ [
             ./nodes/vps/default.nix
             ./settings.dev.nix
