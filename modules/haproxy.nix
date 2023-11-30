@@ -67,10 +67,11 @@ let
 
   certbotScript = pkgs.writeScript "certbot.sh" ''
     #!${pkgs.bash}/bin/bash
-    set -euo pipefail
 
     all_good=true
     output=$(${lib.getExe pkgs.certbot} certificates | grep Domains)
+
+    set -euo pipefail
     for d in ${lib.concatStringsSep " " certDomains}; do
       if ! echo "$output" | grep -q $d; then
         all_good=false
@@ -168,7 +169,7 @@ with lib;
       port = cfg.stats.port;
     };
 
-    systemd.services.certbot = mkIf /*cfg.letsencrypt*/ false {
+    systemd.services.certbot = mkIf cfg.letsencrypt {
       description = "certbot";
       after = [ "network.target" "haproxy.service" ];
       wants = [ "haproxy.service" ];
