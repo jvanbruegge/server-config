@@ -6,6 +6,7 @@
       ../../services/haproxy.nix
       ../../services/vaultwarden.nix
       ../../services/tandoor.nix
+      ../../services/authentik.nix
     ];
   boot = {
     loader.grub.enable = true;
