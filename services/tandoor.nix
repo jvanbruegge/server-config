@@ -6,24 +6,15 @@
     address = "127.0.0.1";
     extraConfig = {
       TIMEZONE = "Europe/Berlin";
-      POSTGRES_HOST = "";
+      POSTGRES_HOST = "127.0.0.1";
       POSTGRES_PORT = config.services.postgresql.port;
-      POSTGRES_USER = "tandoor_recipes";
+      POSTGRES_USER = "tandoor";
       POSTGRES_DB = "tandoor";
       DB_ENGINE = "django.db.backends.postgresql";
     };
   };
 
-  services.postgresql = {
-    enable = true;
-    ensureDatabases = [ "tandoor" ];
-    identMap = "map-name tandoor_recipes tandoor_recipes";
-    ensureUsers = [ {
-      name = "tandoor_recipes";
-      ensurePermissions."DATABASE \"tandoor\"" = "ALL PRIVILEGES";
-      ensureClauses.login = true;
-    } ];
-  };
+  database.tandoor.user = "tandoor";
 
   users.users.tandoor_recipes = {
     name = "tandoor_recipes";
