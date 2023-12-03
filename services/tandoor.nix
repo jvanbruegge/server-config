@@ -1,9 +1,10 @@
-{ pkgs, lib, domain, config, ... }:
+{ pkgs, lib, domain, config, nixpkgs-authentik, ... }:
 {
   services.tandoor-recipes = {
     enable = true;
     port = 8410;
     address = "127.0.0.1";
+    package = nixpkgs-authentik.legacyPackages.x86_64-linux.tandoor-recipes;
     extraConfig = {
       TIMEZONE = "Europe/Berlin";
       POSTGRES_HOST = "127.0.0.1";

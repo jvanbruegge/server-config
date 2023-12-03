@@ -39,6 +39,16 @@ let
       timeout client 50s
       timeout server 50s
 
+    #TODO: put in options
+    frontend ldaps
+      mode tcp
+      bind :636
+      default_backend ldaps
+
+    backend ldaps
+      mode tcp
+      server authentik 127.0.0.1:6636
+
     frontend http
       mode http
       bind *:80

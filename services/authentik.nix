@@ -2,6 +2,7 @@
 {
   services.authentik = {
     enable = true;
+    outposts.ldap.enable = true;
   };
 
   database.authentik.user = "authentik";
@@ -18,5 +19,8 @@
     port = 9000;
   };
 
-  sops.secrets.authentik = {};
+  sops.secrets = {
+    authentik = {};
+    authentik-ldap = {};
+  };
 }

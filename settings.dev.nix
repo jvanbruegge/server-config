@@ -20,10 +20,11 @@
       Type = "simple";
       ExecStart = ''
         ${pkgs.openssh}/bin/ssh root@${domain} \
-          -i %d/id_rsa \
+          -i %d/id_rsa -v \
           -o ServerAliveInterval=60 \
           -o UserKnownHostsFile=%d/known_hosts \
-          -R :80:localhost:80 -R :443:localhost:443 -N
+          -R :80:localhost:80 -R :443:localhost:443 \
+          -R :389:localhost:389 -R :636:localhost:636 -N
       '';
       Restart = "always";
       RestartSec = 5;
