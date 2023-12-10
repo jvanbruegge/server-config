@@ -15,7 +15,7 @@
     };
   };
 
-  database.tandoor.user = "tandoor";
+  database.tandoor = {};
 
   users.users.tandoor_recipes = {
     name = "tandoor_recipes";

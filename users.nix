@@ -5,7 +5,7 @@ in {
   users.jan = {
     name = "Jan";
     isNormalUser = true;
-    group = "jan";
+    group = "users";
     extraGroups = [ "wheel" ];
     createHome = true;
 

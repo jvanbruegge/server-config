@@ -69,7 +69,7 @@ let
   '';
 
   certbotCmd = address: port: ''
-    ${lib.getExe pkgs.certbot} certonly --standalone --cert-name ${domain} \
+    ${pkgs.certbot}/bin/certbot certonly --standalone --cert-name ${domain} \
       --http-01-port ${builtins.toString port} --http-01-address ${address} \
       --non-interactive --keep --agree-tos --email ${email} --expand \
       ${certbotDomains}
@@ -79,7 +79,7 @@ let
     #!${pkgs.bash}/bin/bash
 
     all_good=true
-    output=$(${lib.getExe pkgs.certbot} certificates | grep Domains)
+    output=$(${pkgs.certbot}/bin/certbot certificates | grep Domains)
 
     set -euo pipefail
     for d in ${lib.concatStringsSep " " certDomains}; do

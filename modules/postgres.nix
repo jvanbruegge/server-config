@@ -5,11 +5,7 @@ let
 in with lib; {
   options.database = mkOption {
     type = types.attrsOf (types.submodule {
-      options = {
-        user = mkOption {
-          type = types.str;
-        };
-      };
+      options = { };
     });
   };
 
@@ -18,8 +14,8 @@ in with lib; {
       enable = true;
       ensureDatabases = builtins.attrNames cfg;
       ensureUsers = attrsets.mapAttrsToList (name: opts: {
-        name = opts.user;
-        ensurePermissions."DATABASE \"${name}\"" = "ALL PRIVILEGES";
+        inherit name;
+        ensureDBOwnership = true;
         ensureClauses.login = true;
       }) cfg;
     };

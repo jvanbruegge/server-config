@@ -5,7 +5,7 @@
     outposts.ldap.enable = true;
   };
 
-  database.authentik.user = "authentik";
+  database.authentik = {};
 
   users.users.authentik = {
     name = "authentik";
