@@ -2,7 +2,8 @@
   description = "Modules to run services in rootless containers";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs-tandoor.url = "github:jvanbruegge/nixpkgs/fix-tandoor-import-backport";
     nixpkgs-authentik.url = "github:jvanbruegge/nixpkgs/authentik";
     deploy-rs = {
       url = "github:serokell/deploy-rs";
@@ -14,7 +15,7 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, nixpkgs-authentik, deploy-rs, sops-nix }:
+  outputs = inputs@{ self, nixpkgs, deploy-rs, sops-nix, ... }:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       system = "x86_64-linux";

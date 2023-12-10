@@ -40,16 +40,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1701805708,
-        "narHash": "sha256-hh0S14E816Img0tPaNQSEKFvSscSIrvu1ypubtfh6M4=",
+        "lastModified": 1701952659,
+        "narHash": "sha256-TJv2srXt6fYPUjxgLAL0cy4nuf1OZD4KuA1TrCiQqg0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0561103cedb11e7554cf34cea81e5f5d578a4753",
+        "rev": "b4372c4924d9182034066c823df76d6eaf1f4ec4",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-23.05",
+        "ref": "nixos-23.11",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -86,11 +86,28 @@
         "type": "github"
       }
     },
+    "nixpkgs-tandoor": {
+      "locked": {
+        "lastModified": 1702216999,
+        "narHash": "sha256-BTbeuEazsbOzCKL9Uj1vaoWX5nLjCegL2U3eytAszBs=",
+        "owner": "jvanbruegge",
+        "repo": "nixpkgs",
+        "rev": "701976963aa333d297ccbd3c72905c00d6b8dc04",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jvanbruegge",
+        "ref": "fix-tandoor-import-backport",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "deploy-rs": "deploy-rs",
         "nixpkgs": "nixpkgs",
         "nixpkgs-authentik": "nixpkgs-authentik",
+        "nixpkgs-tandoor": "nixpkgs-tandoor",
         "sops-nix": "sops-nix"
       }
     },
