@@ -7,7 +7,7 @@ if [ -z "$SERVER_ADDRESS" ]; then
     exit 1
 fi
 
-export SSH_COMMAND="ssh root@$SERVER_ADDRESS"
+export SSH_COMMAND="ssh -p $SERVER_PORT root@$SERVER_ADDRESS"
 
 echo "Trying to connect to server"
 if ! $SSH_COMMAND "echo 'SSH connection to server succeeded'"; then
