@@ -7,6 +7,7 @@
       ../../services/vaultwarden.nix
       ../../services/tandoor.nix
       ../../services/authentik.nix
+      ../../services/netbird.nix
     ];
   boot = {
     loader.grub.enable = true;
