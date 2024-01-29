@@ -8,3 +8,9 @@ creation_rules:
       - *admin_jan
       age:
       - *server_vpsDev
+  - path_regex: tunnel/[^/]+\.conf$
+    key_groups:
+    - pgp:
+      - *admin_jan
+      age:
+      - *server_vpsDev
