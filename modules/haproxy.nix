@@ -17,7 +17,7 @@ let
     use_backend ${name} if { hdr(host) -i ${c.subdomain}.${domain} }
   '') config.ingress));
 
-  certDomains = lib.attrsets.attrValues (builtins.mapAttrs (name: c: "${c.subdomain}.${domain}") config.ingress);
+  certDomains = lib.attrsets.attrValues (builtins.mapAttrs (name: c: "${c.subdomain}.${domain}") config.ingress) ++ [ "netbird.${domain}" ];
   certbotDomains = lib.strings.concatMapStringsSep "\\\n  " (s: "-d ${s}") certDomains;
 
   backends = lib.strings.concatStringsSep "\n" (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
@@ -49,6 +49,13 @@ let
       mode tcp
       server authentik 127.0.0.1:6636
 
+    backend netbird-signal
+      mode http
+      server netbird-signal 127.0.0.1:10000
+    backend netbird-management
+      mode http
+      server netbird-management 127.0.0.1:10001
+
     frontend http
       mode http
       bind *:80
@@ -60,6 +67,10 @@ let
       mode http
       bind *:443 ssl crt /etc/letsencrypt/live/${domain}/fullchain.pem
       http-request set-header X-Forwarded-Proto https
+      use_backend netbird-signal if { hdr(host) -i netbird.${domain} } { path_beg /signalexchange.SignalExchange/ }
+      use_backend netbird-management if { hdr(host) -i netbird.${domain} } { path_beg /management.ManagementService/ }
+      use_backend netbird-management if { hdr(host) -i netbird.${domain} } { path_beg /api }
+      #use_backend netbird-signal if { hdr(host) -i netbird.${domain} }
       ${domains}
     ${if cfg.stats.enable then stats else ""}
     ${backends}
