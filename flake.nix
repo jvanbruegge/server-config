@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
     nixpkgs-authentik.url = "github:jvanbruegge/nixpkgs/authentik";
+    nixpkgs-netbird.url = "github:Tom-Hubrecht/nixpkgs/netbird-server";
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";

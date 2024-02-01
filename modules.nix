@@ -4,6 +4,6 @@
     ./modules/haproxy.nix
     ./modules/authentik.nix
     ./modules/postgres.nix
-    ./modules/netbird.nix
+    ./modules/netbird-server.nix
   ];
 }
