@@ -244,7 +244,7 @@ with lib;
         KillMode = "mixed";
         SuccessExitStatus = "143";
         Restart = "always";
-        RestartSec = 3;
+        RestartSec = 30;
         RuntimeDirectory = "haproxy";
         # upstream hardening options
         User = cfg.user;

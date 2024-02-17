@@ -10,12 +10,12 @@ in {
     setupAutoOidc = true;
     enableACME = false;
 
-    management.disableSingleAccountMode = true;
-
     ports = {
       signal = 10000;
       management = 10001;
     };
+
+    management.dnsDomain = "net.${domain}";
 
     idpManagerExtraConfig = {
       Username = "netbird";
@@ -34,6 +34,7 @@ in {
       NETBIRD_MGMT_IDP = "authentik";
       NETBIRD_AUTH_DEVICE_AUTH_PROVIDER = "hosted";
       NETBIRD_IDP_MGMT_CLIENT_ID = "$NETBIRD_AUTH_CLIENT_ID";
+      NETBIRD_AUTH_SUPPORTED_SCOPES = [ "openid" "profile" "email" "offline_access" "api" "groups" ];
       TURN_PASSWORD = "$TURN_PASSWORD";
       TURN_USER = "self";
     };
