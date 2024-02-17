@@ -2,6 +2,7 @@
 {
   services.authentik = {
     enable = true;
+    outposts.ldap.enable = false;
   };
 
   database.authentik = {};

@@ -28,9 +28,27 @@
     DynamicUser = lib.mkForce false;
   };
 
+  services.nginx = {
+    enable = true;
+    defaultListen = [{
+      addr = "127.0.0.1";
+      port = 8778;
+    }];
+    virtualHosts."tandoor.${domain}".locations = {
+      "/media/".alias = "/var/lib/tandoor-recipes/";
+      "/" = {
+        extraConfig = ''
+          proxy_set_header Host $host;
+          proxy_set_header X-Forwarded-Proto https;
+        '';
+        proxyPass = "http://127.0.0.1:8410";
+      };
+    };
+  };
+
   ingress.tandoor = {
     subdomain = "tandoor";
-    port = 8410;
+    port = 8778;
   };
 
   sops.secrets.tandoor = {};
