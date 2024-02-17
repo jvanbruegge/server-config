@@ -40,32 +40,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1705458851,
-        "narHash": "sha256-uQvEhiv33Zj/Pv364dTvnpPwFSptRZgVedDzoM+HqVg=",
+        "lastModified": 1707092692,
+        "narHash": "sha256-ZbHsm+mGk/izkWtT4xwwqz38fdlwu7nUUKXTOmm4SyE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8bf65f17d8070a0a490daf5f1c784b87ee73982c",
+        "rev": "faf912b086576fd1a15fca610166c98d47bc667e",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-23.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-authentik": {
-      "locked": {
-        "lastModified": 1705598881,
-        "narHash": "sha256-5K5MdYqhybtXetbgMFMMQLWBGCPIOpm4nRoJjuQT1CQ=",
-        "owner": "jvanbruegge",
-        "repo": "nixpkgs",
-        "rev": "54baa29146853cca4a8acd4bf93bad59c573035f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jvanbruegge",
-        "ref": "authentik",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -106,7 +90,6 @@
       "inputs": {
         "deploy-rs": "deploy-rs",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-authentik": "nixpkgs-authentik",
         "nixpkgs-netbird": "nixpkgs-netbird",
         "sops-nix": "sops-nix"
       }
