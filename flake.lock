@@ -40,32 +40,32 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1705458851,
-        "narHash": "sha256-uQvEhiv33Zj/Pv364dTvnpPwFSptRZgVedDzoM+HqVg=",
+        "lastModified": 1707092692,
+        "narHash": "sha256-ZbHsm+mGk/izkWtT4xwwqz38fdlwu7nUUKXTOmm4SyE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8bf65f17d8070a0a490daf5f1c784b87ee73982c",
+        "rev": "faf912b086576fd1a15fca610166c98d47bc667e",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-23.11",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
     },
-    "nixpkgs-authentik": {
+    "nixpkgs-netbird": {
       "locked": {
-        "lastModified": 1705598881,
-        "narHash": "sha256-5K5MdYqhybtXetbgMFMMQLWBGCPIOpm4nRoJjuQT1CQ=",
-        "owner": "jvanbruegge",
+        "lastModified": 1705344267,
+        "narHash": "sha256-99WPwywJ7YMt3L51Fkslj6LP8asOt8OQ7k6X0d8f/Ws=",
+        "owner": "Tom-Hubrecht",
         "repo": "nixpkgs",
-        "rev": "54baa29146853cca4a8acd4bf93bad59c573035f",
+        "rev": "f4d6e3cfb212478115a93bbc2d01615481d69f15",
         "type": "github"
       },
       "original": {
-        "owner": "jvanbruegge",
-        "ref": "authentik",
+        "owner": "Tom-Hubrecht",
+        "ref": "netbird-server",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -90,7 +90,7 @@
       "inputs": {
         "deploy-rs": "deploy-rs",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-authentik": "nixpkgs-authentik",
+        "nixpkgs-netbird": "nixpkgs-netbird",
         "sops-nix": "sops-nix"
       }
     },

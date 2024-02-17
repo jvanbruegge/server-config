@@ -17,7 +17,7 @@ let
     use_backend ${name} if { hdr(host) -i ${c.subdomain}.${domain} }
   '') config.ingress));
 
-  certDomains = lib.attrsets.attrValues (builtins.mapAttrs (name: c: "${c.subdomain}.${domain}") config.ingress);
+  certDomains = lib.attrsets.attrValues (builtins.mapAttrs (name: c: "${c.subdomain}.${domain}") config.ingress) ++ [ "netbird.${domain}" ];
   certbotDomains = lib.strings.concatMapStringsSep "\\\n  " (s: "-d ${s}") certDomains;
 
   backends = lib.strings.concatStringsSep "\n" (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
@@ -35,6 +35,7 @@ let
     defaults
       log global
       option httplog
+      option forwardfor
       timeout connect 5s
       timeout client 50s
       timeout server 50s
@@ -49,6 +50,16 @@ let
       mode tcp
       server authentik 127.0.0.1:6636
 
+    backend netbird-dashboard
+      mode http
+      server netbird 127.0.0.1:8080
+    backend netbird-signal
+      mode http
+      server netbird-signal 127.0.0.1:10000 check proto h2
+    backend netbird-management
+      mode http
+      server netbird-management 127.0.0.1:10001 check proto h2
+
     frontend http
       mode http
       bind *:80
@@ -60,6 +71,10 @@ let
       mode http
       bind *:443 ssl crt /etc/letsencrypt/live/${domain}/fullchain.pem
       http-request set-header X-Forwarded-Proto https
+      use_backend netbird-signal if { path_beg /signalexchange.SignalExchange/ } { hdr(host) -i netbird.${domain} }
+      use_backend netbird-management if { path_beg /management.ManagementService/ } { hdr(host) -i netbird.${domain} }
+      use_backend netbird-management if { path_beg /api } { hdr(host) -i netbird.${domain} }
+      use_backend netbird-dashboard if { hdr(host) -i netbird.${domain} }
       ${domains}
     ${if cfg.stats.enable then stats else ""}
     ${backends}
@@ -229,7 +244,7 @@ with lib;
         KillMode = "mixed";
         SuccessExitStatus = "143";
         Restart = "always";
-        RestartSec = 3;
+        RestartSec = 30;
         RuntimeDirectory = "haproxy";
         # upstream hardening options
         User = cfg.user;

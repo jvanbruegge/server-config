@@ -1,11 +1,11 @@
-{ config, lib, pkgs, domain, email, nixpkgs-authentik, ... }:
+{ config, lib, pkgs, domain, email, ... }:
 
 let
   cfg = config.services.authentik;
 in with lib; {
   options.services.authentik = {
     enable = mkEnableOption (lib.mdDoc "authentik, the open-source Identity Provider that emphasizes flexibility and versatility");
-    package = mkPackageOption nixpkgs-authentik.legacyPackages.x86_64-linux "authentik" {
+    package = mkPackageOption pkgs "authentik" {
       default = [ "authentik" ];
     };
     host = mkOption {
@@ -16,7 +16,7 @@ in with lib; {
       type = types.submodule {
         options = {
           enable = mkEnableOption (lib.mdDoc "the authentik ldap outpost");
-          package = mkPackageOption nixpkgs-authentik.legacyPackages.x86_64-linux "authentik-outposts.ldap" {
+          package = mkPackageOption pkgs "authentik-outposts.ldap" {
             default = [ "authentik-outposts" "ldap" ];
           };
           host = mkOption {
