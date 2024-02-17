@@ -1,4 +1,4 @@
-# Lunchbox - Lightweight containers using NixOS
+# My NixOS server config
 
 ## Development setup
 
