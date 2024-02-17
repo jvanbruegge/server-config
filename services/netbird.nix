@@ -57,6 +57,8 @@ in {
     '';
   };
 
+  services.netbird.enable = true;
+
   services.nginx = {
     enable = true;
     defaultListen = [ {
