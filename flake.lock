@@ -54,6 +54,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-authentik": {
+      "locked": {
+        "lastModified": 1708367665,
+        "narHash": "sha256-3GJLLOz8NjTu4uqhOgxW/b/DXj988bvBBP2DWIoq97c=",
+        "owner": "jvanbruegge",
+        "repo": "nixpkgs",
+        "rev": "d0655c769e557d158231b36f8fd00846004829f6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jvanbruegge",
+        "ref": "authentik-email",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-netbird": {
       "locked": {
         "lastModified": 1705344267,
@@ -90,6 +106,7 @@
       "inputs": {
         "deploy-rs": "deploy-rs",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-authentik": "nixpkgs-authentik",
         "nixpkgs-netbird": "nixpkgs-netbird",
         "sops-nix": "sops-nix"
       }
