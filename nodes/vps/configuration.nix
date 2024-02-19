@@ -8,6 +8,7 @@
       ../../services/tandoor.nix
       ../../services/authentik.nix
       ../../services/netbird.nix
+      ../../services/borgbackup.nix
     ];
   boot = {
     loader.grub.enable = true;

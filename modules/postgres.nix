@@ -25,5 +25,14 @@ in with lib; {
     systemd.services.postgresql.serviceConfig.ExecStartPost = [
       "+${pkgs.bash}/bin/bash -x ${../scripts/set_postgres_passwords.sh} ${pkgs.sudo}/bin/sudo"
     ];
+
+    services.postgresqlBackup = {
+      enable = true;
+      startAt = "*-*-* 23:00:00";
+    };
+
+    services.borgbackup.jobs.postgresql = import ../backup.nix domain "postgresql" {
+      paths = [ "/var/backup/postgresql" ];
+    };
   };
 }
