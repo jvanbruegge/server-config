@@ -3,6 +3,7 @@
   services.vaultwarden = {
     enable = true;
     environmentFile = "/run/secrets/vaultwarden";
+    backupDir = "/var/backup/vaultwarden";
     config = {
       SMTP_PORT = 465;
       SMTP_FROM_NAME = "Vaultwarden";
@@ -19,6 +20,10 @@
   ingress.vaultwarden = {
     subdomain = "bitwarden";
     port = 8222;
+  };
+
+  services.borgbackup.jobs.vaultwarden = import ../backup.nix domain "vaultwarden" {
+    paths = [ "/var/backup/vaultwarden" ];
   };
 
   sops.secrets.vaultwarden = {};
