@@ -8,6 +8,11 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/ubuntu2204"
 
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 4096
+    v.cpus = 2
+  end
+
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
