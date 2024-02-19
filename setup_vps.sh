@@ -19,9 +19,3 @@ $SSH_COMMAND 'curl https://raw.githubusercontent.com/elitak/nixos-infect/9c5b46d
 
 echo 'Waiting for server reboot'
 sleep 10
-
-if [ -n "$AGE_KEY" ]; then
-  age_key=$($SSH_COMMAND 'nix-shell -p ssh-to-age --run "cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age"')
-  sed -i "s/&${AGE_KEY}.*$/\&${AGE_KEY} ${age_key}/" .sops.yaml
-  sops updatekeys "$SECRETS_FILE"
-fi

@@ -6,13 +6,13 @@
 {
   imports = [ ];
 
-  boot.initrd.availableKernelModules = [ "ata_piix" "sd_mod" "sr_mod" ];
-  boot.initrd.kernelModules = [ ];
+  boot.initrd.availableKernelModules = [ "ata_piix" "ahci" "sd_mod" ];
+  boot.initrd.kernelModules = [ "dm-snapshot" ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/sda1";
+    { device = "/dev/disk/by-uuid/b5daa9c0-8e58-444f-b35d-601d19c9bfda";
       fsType = "ext4";
     };
 
@@ -24,8 +24,8 @@
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp0s3.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp0s8.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   virtualisation.virtualbox.guest.enable = true;
 }

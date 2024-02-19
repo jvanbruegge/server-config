@@ -1,8 +1,8 @@
 keys:
   - &admin_jan 35135CE577AD711F38259A99366572BE7D6C78A2
-  - &server_vpsDev age1jslv70zx6nudxdsznejmpetj3ffzdj0sdh65793nps4raqa6zcxsek5dnq
+  - &server_vpsDev age1wv4uny737yrw264eegdpmhhffkm34d0v6677fwn4hstgallr339sm0a9rc
 creation_rules:
-  - path_regex: secrets/[^/]+\.yaml$
+  - path_regex: secrets/[^/]+$
     key_groups:
     - pgp:
       - *admin_jan
