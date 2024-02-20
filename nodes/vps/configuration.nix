@@ -1,8 +1,7 @@
-{ config, pkgs, ... }:
+{ config, pkgs, domain, ... }:
 {
   imports =
-    [ # Include the results of the hardware scan
-      ./hardware-configuration.nix
+    [
       ../../services/haproxy.nix
       ../../services/vaultwarden.nix
       ../../services/tandoor.nix
@@ -10,12 +9,7 @@
       ../../services/netbird.nix
       ../../services/borgbackup.nix
     ];
-  boot = {
-    loader.grub.enable = true;
-    loader.grub.device   = "/dev/sda";
-    supportedFilesystems = ["nfs4"];
-  };
-
+  
   security.sudo.configFile =
     ''
     Defaults:root,%wheel env_keep+=LOCALE_ARCHIVE
@@ -23,14 +17,14 @@
     Defaults lecture = never
     '';
 
-  services = {
-    openssh.enable = true;
-  };
+  services.openssh.enable = true;
 
   users = import ../../users.nix;
 
   services.resolved.enable = true;
   networking.nameservers = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
+  networking.hostName = "lighthouse";
+  networking.domain = domain;
 
   nix.settings."trusted-users" = [ "root" "@wheel" ];
 

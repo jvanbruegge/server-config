@@ -30,7 +30,17 @@
           specialArgs = inputs;
           modules = defaultModules ++ [
             ./nodes/vps/default.nix
+            ./nodes/vps/hardware-configuration.dev.nix
             ./settings.dev.nix
+          ];
+        };
+        vps = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = inputs;
+          modules = defaultModules ++ [
+            ./nodes/vps/default.nix
+            ./nodes/vps/hardware-configuration.prod.nix
+            ./settings.prod.nix
           ];
         };
       };
@@ -51,6 +61,14 @@
               user = "root";
               path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.vpsDev;
             };
+          };
+        };
+        vps = {
+          sshUser = "root";
+          hostname = "vps";
+          profiles.systems = {
+            user = "root";
+            path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.vps;
           };
         };
       };

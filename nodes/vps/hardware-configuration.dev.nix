@@ -6,6 +6,12 @@
 {
   imports = [ ];
 
+  boot = {
+    loader.grub.enable = true;
+    loader.grub.device   = "/dev/sda";
+    supportedFilesystems = ["nfs4"];
+  };
+
   boot.initrd.availableKernelModules = [ "ata_piix" "ahci" "sd_mod" ];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
   boot.kernelModules = [ ];
