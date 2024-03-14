@@ -1,8 +1,7 @@
-{ pkgs, lib, domain, config, nixpkgs-authentik, ... }:
+{ pkgs, lib, domain, config, ... }:
 {
   services.authentik = {
     enable = true;
-    package = nixpkgs-authentik.legacyPackages.x86_64-linux.authentik;
     outposts.ldap.enable = false;
   };
 

@@ -55,6 +55,8 @@ let
       server netbird 127.0.0.1:8080
     backend netbird-signal
       mode http
+      timeout client 3600s
+      timeout server 3600s
       server netbird-signal 127.0.0.1:10000 check proto h2
     backend netbird-management
       mode http

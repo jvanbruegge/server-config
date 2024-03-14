@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-netbird.url = "github:Tom-Hubrecht/nixpkgs/netbird-server";
-    nixpkgs-authentik.url = "github:jvanbruegge/nixpkgs/authentik-email";
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,6 +42,23 @@
             ./settings.prod.nix
           ];
         };
+
+        caladanDev = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = inputs;
+          modules = [
+            ./nodes/caladan/default.nix
+            ./nodes/caladan/hardware-configuration.dev.nix
+          ];
+        };
+        caladan = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = inputs;
+          modules = [
+            ./nodes/caladan/default.nix
+            ./nodes/caladan/hardware-configuration.prod.nix
+          ];
+        };
       };
 
       devShells."${system}".default = pkgs.mkShell {
@@ -56,19 +72,33 @@
         vpsDev = {
           sshUser = "root";
           hostname = "vps-dev";
-          profiles = {
-            system = {
-              user = "root";
-              path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.vpsDev;
-            };
+          profiles.system = {
+            user = "root";
+            path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.vpsDev;
           };
         };
         vps = {
           sshUser = "root";
           hostname = "vps";
-          profiles.systems = {
+          profiles.system = {
             user = "root";
             path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.vps;
+          };
+        };
+        caladanDev = {
+          sshUser = "root";
+          hostname = "vps-dev";
+          profiles.system = {
+            user = "root";
+            path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.caladanDev;
+          };
+        };
+        caladan = {
+          sshUser = "root";
+          hostname = "caladan";
+          profiles.system = {
+            user = "root";
+            path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.caladan;
           };
         };
       };
