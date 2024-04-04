@@ -47,6 +47,8 @@
           inherit system;
           specialArgs = inputs;
           modules = [
+            ./settings.nix
+            sops-nix.nixosModules.sops
             ./nodes/caladan/default.nix
             ./nodes/caladan/hardware-configuration.dev.nix
           ];
@@ -55,6 +57,8 @@
           inherit system;
           specialArgs = inputs;
           modules = [
+            ./settings.nix
+            sops-nix.nixosModules.sops
             ./nodes/caladan/default.nix
             ./nodes/caladan/hardware-configuration.prod.nix
           ];

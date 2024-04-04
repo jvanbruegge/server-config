@@ -2,14 +2,21 @@ keys:
   - &admin_jan 35135CE577AD711F38259A99366572BE7D6C78A2
   - &server_vpsDev age1wv4uny737yrw264eegdpmhhffkm34d0v6677fwn4hstgallr339sm0a9rc
   - &server_vps  age1gw9jwanpejdw4pwu0c7cc768rl0na4t3upcjvm5uhplkp07ersss6g40pp
+  - &server_caladan age18544ku26z3czep5cyn2jvlxpfn2kml3zrplg8ughcwhrseavna3q54s293
 creation_rules:
-  - path_regex: secrets/[^/]+$
+  - path_regex: secrets/vps[^/]+$
     key_groups:
     - pgp:
       - *admin_jan
       age:
       - *server_vpsDev
       - *server_vps
+  - path_regex: secrets/caladan[^/]+$
+    key_groups:
+    - pgp:
+      - *admin_jan
+      age:
+      - *server_caladan
   - path_regex: tunnel/[^/]+\.conf$
     key_groups:
     - pgp:
