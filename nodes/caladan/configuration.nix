@@ -11,28 +11,6 @@
   };
   networking.hostId = "24650b3a";
 
-  nixpkgs.config.allowUnfree = true; # needed for epkowa
-  hardware.sane = {
-    enable = true;
-    extraBackends = [ pkgs.epkowa ];
-    disabledDefaultBackends = [
-      "net" "abaton" "agfafocus" "apple" "artec"
-      "as6e" "avision" "bh" "canon"
-      "cardscan" "coolscan"
-      "dell1600n_" "dmc" "epjitsu" "epson2" "epsonds"
-      "escl" "fujitsu" "genesys" "gt68xx" "hp"
-      "hs2p" "ibm" "kodak"
-      "kvs1025" "kvs20xx" "kvs40xx" "leo"
-      "lexmark" "ma1509" "magicolor" "matsushita" "microtek"
-      "mustek" "nec"
-      "niash" "pie" "pint" "pixma" "plustek"
-      "qcam" "ricoh" "rts8891" "s9036"
-      "sceptre" "sharp" "sm3600" "sm3840" "snapscan"
-      "sp15c" "tamarack" "teco1" "teco2" "teco3"
-      "u12" "umax" "v4l" "xerox_mfp"
-    ];
-  };
-  
   security.sudo.configFile =
     ''
     Defaults:root,%wheel env_keep+=LOCALE_ARCHIVE
