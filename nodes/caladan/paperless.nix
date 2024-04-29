@@ -30,7 +30,6 @@ let
   scanScript = pkgs.writeScript "scanbd_scan.script" ''
     #!${pkgs.bash}/bin/bash
     export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.sane-backends ]}
-    set -x
     date="$(date -Iseconds)"
     dir="$(mktemp -d)"
     file="$dir/Scan $date.pdf"
@@ -38,6 +37,7 @@ let
     export SANE_CONFIG_DIR=/etc/sane-config
     export LD_LIBRARY_PATH=/etc/sane-libs
 
+    echo "Scanning $file"
     scanimage -d "$SCANBD_DEVICE" --resolution 400 --scan-area A4 -o "$file" --format pdf
     chown paperless:paperless "$file"
     mv "$file" "/data/paperless/consume/"
@@ -60,7 +60,7 @@ in {
   };
 
   services.udev.extraRules = ''
-    ENV{ID_VENDOR_ID}=="04b8", ENV{ID_MODEL_ID}=="0130", GROUP="paperless", TAG+="systemd", ENV{SYSTEMD_ALIAS}="/sys/devices/virtual/misc/perfection_v500"
+    ENV{ID_VENDOR_ID}=="04b8", ENV{ID_MODEL_ID}=="0130", GROUP="paperless", TAG+="systemd", ENV{SYSTEMD_ALIAS}="/sys/devices/virtual/misc/perfection_v500", ENV{SYSTEMD_WANTS}+="scanbd.service"
   '';
 
   systemd.services.paperless-scheduler.serviceConfig.EnvironmentFile = "/run/secrets/paperless";
@@ -78,8 +78,8 @@ in {
 
   systemd.services.scanbd = {
     description = "Scanner button polling service";
-    #after = [ "sys-devices-virtual-misc-perfection_v500.device" ];
-    #bindsTo = [ "sys-devices-virtual-misc-perfection_v500.device" ];
+    after = [ "sys-devices-virtual-misc-perfection_v500.device" ];
+    bindsTo = [ "sys-devices-virtual-misc-perfection_v500.device" ];
     environment = {
       SANE_CONFIG_DIR = "/etc/sane-config";
       LD_LIBRARY_PATH = "/etc/sane-libs";
