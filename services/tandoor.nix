@@ -26,22 +26,25 @@
   systemd.services.tandoor-recipes.serviceConfig = {
     EnvironmentFile = "/run/secrets/tandoor";
     DynamicUser = lib.mkForce false;
+    Group = lib.mkForce "tandoor";
   };
 
   services.nginx = {
-    enable = true;
-    defaultListen = [{
-      addr = "127.0.0.1";
-      port = 8778;
-    }];
-    virtualHosts."tandoor.${domain}".locations = {
-      "/media/".alias = "/var/lib/tandoor-recipes/";
-      "/" = {
-        extraConfig = ''
-          proxy_set_header Host $host;
-          proxy_set_header X-Forwarded-Proto https;
-        '';
-        proxyPass = "http://127.0.0.1:8410";
+    virtualHosts."tandoor.${domain}" = {
+      listen = [{
+        addr = "127.0.0.1";
+        port = 8778;
+      }];
+
+      locations = {
+        "/media/".alias = "/var/lib/tandoor-recipes/";
+        "/" = {
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Proto https;
+          '';
+          proxyPass = "http://127.0.0.1:8410";
+        };
       };
     };
   };

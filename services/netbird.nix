@@ -1,71 +1,123 @@
 { pkgs, lib, domain, config, ... }:
 let
   NETBIRD_DOMAIN = "netbird.${domain}";
+  client_id = "kLVxL9B0tZNwR8VYWWE8DHoXpvjLDnErpkgTEQDa";
 in {
-  services.netbird-server = {
+  sops.secrets = {
+    netbird_authentik_password.owner = "netbird";
+    turn_secret.owner = "netbird";
+    coturn = {
+      owner = "turnserver";
+      group = "netbird";
+      mode = "0440";
+    };
+  };
+
+  services.netbird = {
     enable = true;
 
-    enableNginx = true;
-    enableCoturn = true;
-    setupAutoOidc = true;
-    enableACME = false;
+    server = {
+      management = {
+        enable = true;
+        port = 10001;
+        oidcConfigEndpoint = "https://authentik.${domain}/application/o/netbird/.well-known/openid-configuration";
+        domain = NETBIRD_DOMAIN;
+        turnDomain = NETBIRD_DOMAIN;
+        dnsDomain = "net.${domain}";
+        singleAccountModeDomain = "net.${domain}";
 
-    ports = {
-      signal = 10000;
-      management = 10001;
+        settings = {
+          TURNConfig = {
+            Turns = [ {
+              Proto = "udp";
+              URI = "turn:${NETBIRD_DOMAIN}:3478";
+              Username = "netbird";
+              Password._secret = "/run/secrets/coturn";
+            }];
+
+            Secret._secret = "/run/secrets/turn_secret";
+          };
+
+          DataStoreEncryptionKey = null;
+
+          HttpConfig = {
+            AuthAudience = client_id;
+            AuthUserIDClaim = "sub";
+          };
+
+          IdpManagerConfig = {
+            ManagerType = "authentik";
+            ClientConfig = {
+              Issuer = "https://authentik.${domain}/application/o/netbird/";
+              ClientID = client_id;
+              TokenEndpoint = "https://authentik.${domain}/application/o/token/";
+              ClientSecret = "";
+            };
+            ExtraConfig = {
+              Password._secret = "/run/secrets/netbird_authentik_password";
+              Username = "netbird";
+            };
+          };
+
+          PKCEAuthorizationFlow.ProviderConfig = {
+            Audience = client_id;
+            ClientID = client_id;
+            ClientSecret = "";
+            AuthorizationEndpoint = "https://authentik.${domain}/application/o/authorize/";
+            TokenEndpoint = "https://authentik.${domain}/application/o/token/";
+            RedirectURLs = [ "http://localhost:53000" ];
+          };
+        };
+      };
+
+      signal = {
+        enable = true;
+        port = 10000;
+        domain = NETBIRD_DOMAIN;
+      };
+
+      dashboard = {
+        enable = true;
+        enableNginx = lib.mkForce true;
+        domain = NETBIRD_DOMAIN;
+        managementServer = "https://${NETBIRD_DOMAIN}";
+        settings = {
+          AUTH_AUTHORITY = "https://authentik.${domain}/application/o/netbird/";
+          AUTH_SUPPORTED_SCOPES = "openid profile email offline_access api";
+          AUTH_AUDIENCE = client_id;
+          AUTH_CLIENT_ID = client_id;
+        };
+      };
+
+      coturn = {
+        enable = true;
+        passwordFile = "/run/secrets/coturn";
+        domain = NETBIRD_DOMAIN;
+      };
     };
-
-    management.dnsDomain = "net.${domain}";
-
-    idpManagerExtraConfig = {
-      Username = "netbird";
-      Password = "$NETBIRD_AUTHENTIK_PASSWORD";
-    };
-
-    settings = {
-      inherit NETBIRD_DOMAIN;
-      NETBIRD_AUTH_AUDIENCE = "$NETBIRD_AUTH_CLIENT_ID";
-      NETBIRD_AUTH_CLIENT_ID = "$NETBIRD_AUTH_CLIENT_ID";
-      NETBIRD_AUTH_CLIENT_SECRET = "";
-      NETBIRD_AUTH_DEVICE_AUTH_CLIENT_ID="$NETBIRD_AUTH_CLIENT_ID";
-      NETBIRD_AUTH_DEVICE_AUTH_AUDIENCE="$NETBIRD_AUTH_CLIENT_ID";
-      NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT = "https://authentik.${domain}/application/o/netbird/.well-known/openid-configuration";
-      NETBIRD_AUTH_PKCE_USE_ID_TOKEN = false;
-      NETBIRD_MGMT_IDP = "authentik";
-      NETBIRD_AUTH_DEVICE_AUTH_PROVIDER = "hosted";
-      NETBIRD_IDP_MGMT_CLIENT_ID = "$NETBIRD_AUTH_CLIENT_ID";
-      NETBIRD_AUTH_SUPPORTED_SCOPES = [ "openid" "profile" "email" "offline_access" "api" "groups" ];
-      TURN_PASSWORD = "$TURN_PASSWORD";
-      TURN_USER = "self";
-    };
   };
 
-  systemd.services.netbird-setup = {
-    serviceConfig.EnvironmentFile = [ "/run/secrets/netbird" ];
+  users.users.netbird = {
+    name = "netbird";
+    group = "netbird";
+    isSystemUser = true;
+  };
+  users.groups.netbird = {};
+
+  systemd.services.netbird-management.serviceConfig = {
+    User = "netbird";
+    Group = "netbird";
+  };
+  systemd.services.netbird-signal.serviceConfig = {
+    User = "netbird";
+    Group = "netbird";
   };
 
-  services.coturn.extraConfig = lib.mkForce ''
-    fingerprint
-    no-software-attribute
-    external-ip=${NETBIRD_DOMAIN}
-  '';
+  security.acme.certs = lib.mkForce {};
 
-  systemd.services.coturn.serviceConfig = {
-    EnvironmentFile = "/run/secrets/netbird";
-    ExecStart = lib.mkForce ''
-      ${pkgs.coturn}/bin/turnserver -c /run/coturn/turnserver.cfg --user="''${TURN_USER}:''${TURN_PASSWORD}"
-    '';
-  };
+  services.nginx.virtualHosts."${NETBIRD_DOMAIN}".listen = [ {
+    addr = "127.0.0.1";
+    port = 8080;
+  } ];
 
-  services.netbird.enable = true;
-
-  services.nginx = {
-    enable = true;
-    defaultListen = [ {
-      addr = "127.0.0.1";
-      port = 8080;
-    } ];
-  };
-
-  sops.secrets.netbird = {};
 }
