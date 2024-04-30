@@ -22,7 +22,7 @@
     port = 8222;
   };
 
-  services.borgbackup.jobs.vaultwarden = import ../backup.nix domain "vaultwarden" {
+  services.borgbackup.jobs.vaultwarden = import ../../backup.nix domain "vaultwarden" {
     paths = [ "/var/backup/vaultwarden" ];
   };
 

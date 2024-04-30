@@ -1,4 +1,4 @@
-{ config, lib, pkgs, domain, email, nixpkgs-authentik, ... }:
+{ config, lib, pkgs, domain, email, ... }:
 
 let
   cfg = config.database;
@@ -7,9 +7,10 @@ in with lib; {
     type = types.attrsOf (types.submodule {
       options = { };
     });
+    default = {};
   };
 
-  config = {
+  config = mkIf (builtins.attrNames cfg != []) {
     services.postgresql = {
       enable = true;
       ensureDatabases = builtins.attrNames cfg;

@@ -54,22 +54,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-netbird": {
-      "locked": {
-        "lastModified": 1707779350,
-        "narHash": "sha256-HWLKjxfwZGS9x8Cjcd9hoDRAtx6eft3by8zIYu7fUdI=",
-        "owner": "Tom-Hubrecht",
-        "repo": "nixpkgs",
-        "rev": "fde2bbc593f0208ff50c59eab1a1214e81e58e94",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Tom-Hubrecht",
-        "ref": "netbird-server",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1713638189,
@@ -90,7 +74,6 @@
       "inputs": {
         "deploy-rs": "deploy-rs",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-netbird": "nixpkgs-netbird",
         "sops-nix": "sops-nix"
       }
     },

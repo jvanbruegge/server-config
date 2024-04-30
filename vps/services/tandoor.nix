@@ -54,7 +54,7 @@
     port = 8778;
   };
 
-  services.borgbackup.jobs.tandoor-media = import ../backup.nix domain "tandoor" {
+  services.borgbackup.jobs.tandoor-media = import ../../backup.nix domain "tandoor" {
     paths = [ "/var/lib/tandoor-recipes/" ];
   };
 

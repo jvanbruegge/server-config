@@ -21,11 +21,11 @@
   services.openssh.enable = true;
 
   sops = {
-    defaultSopsFile = ../../secrets/caladan.yaml;
+    defaultSopsFile = ../secrets/caladan.yaml;
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
 
-  users = import ../../users.nix;
+  users = import ../users.nix;
 
   services.resolved.enable = true;
   networking.nameservers = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
