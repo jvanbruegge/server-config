@@ -35,6 +35,10 @@
     in {
       nixosConfigurations = nixpkgs.lib.attrsets.mergeAttrsList (builtins.map mkServer [ "vps" "caladan" ]);
 
+      nixosModules = {
+        haproxy = ./modules/haproxy.nix;
+      };
+
       devShells."${system}".default = pkgs.mkShell {
         packages = [
           deploy-rs.packages."${system}".default

@@ -2,31 +2,29 @@
 
 let
   cfg = config.services.haproxy;
-  indent = str: lib.strings.concatStringsSep "\n  " (lib.strings.splitString "\n" str);
 
-  stats = ''
-    frontend stats
-      mode http
-      bind 127.0.0.1:${builtins.toString cfg.stats.port}
-      stats enable
-      stats uri /
-      stats refresh 10s
+  noNewlines = s: lib.strings.concatLines (builtins.filter (s: s != "") (lib.strings.splitString "\n" s));
+  indentStr = s: lib.strings.concatLines (builtins.map (x: "  ${x}") (lib.strings.splitString "\n" s));
+
+  mkFrontend = cfg: noNewlines ''
+    mode ${cfg.mode}
+    bind ${cfg.bind.address}:${builtins.toString cfg.bind.port}${lib.strings.optionalString (cfg.bind.interface != null) " interface ${cfg.bind.interface}"} ${cfg.bind.extraOptions}
+    ${lib.strings.concatLines (lib.attrsets.mapAttrsToList (name: x: "acl ${name} ${x}") cfg.acls)}
+    ${lib.strings.concatMapStringsSep "\n" (x: "http-request ${x}") cfg.httpRequest}
+    ${cfg.extraConfig}
+    ${lib.strings.concatMapStringsSep "\n" (x: "use_backend ${x}") cfg.useBackend}
+    ${lib.strings.optionalString (cfg.defaultBackend != null) "default_backend ${cfg.defaultBackend}"}
   '';
 
-  domains = lib.strings.concatStringsSep "  " (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
-    use_backend ${name} if { hdr(host) -i ${c.subdomain}.${domain} }
-  '') config.ingress));
+  mkBackend = cfg: noNewlines ''
+    mode ${cfg.mode}
+    ${lib.strings.optionalString (cfg.timeout.client != null) "timeout client ${cfg.timeout.client}"}
+    ${lib.strings.optionalString (cfg.timeout.server != null) "timeout server ${cfg.timeout.server}"}
+    ${lib.strings.optionalString (cfg.timeout.connect != null) "timeout connect ${cfg.timeout.connect}"}
+    ${lib.strings.concatMapStringsSep "\n" (x: "server ${x}") cfg.servers}
+  '';
 
-  certDomains = lib.attrsets.attrValues (builtins.mapAttrs (name: c: "${c.subdomain}.${domain}") config.ingress) ++ [ "netbird.${domain}" ];
-  certbotDomains = lib.strings.concatMapStringsSep "\\\n  " (s: "-d ${s}") certDomains;
-
-  backends = lib.strings.concatStringsSep "\n" (lib.attrsets.attrValues (builtins.mapAttrs (name: c: ''
-    backend ${name}
-      mode http
-      server ${name} ${c.address}:${builtins.toString c.port}
-  '') config.ingress));
-
-  haproxyCfg = pkgs.writeText "haproxy.conf" ''
+  mkHAProxyConfig = cfg: ''
     global
       # needed for hot-reload to work without dropping packets in multi-worker mode
       stats socket /run/haproxy/haproxy.sock mode 600 expose-fd listeners level user
@@ -40,51 +38,15 @@ let
       timeout client 50s
       timeout server 50s
 
-    #TODO: put in options
-    frontend ldaps
-      mode tcp
-      bind :636
-      default_backend ldaps
-
-    backend ldaps
-      mode tcp
-      server authentik 127.0.0.1:6636
-
-    backend netbird-dashboard
-      mode http
-      server netbird 127.0.0.1:8080
-    backend netbird-signal
-      mode http
-      timeout client 3600s
-      timeout server 3600s
-      server netbird-signal 127.0.0.1:10000 check proto h2
-    backend netbird-management
-      mode http
-      server netbird-management 127.0.0.1:10001 check proto h2
-
-    frontend http
-      mode http
-      bind *:80
-      acl letsencrypt path_beg /.well-known/acme-challenge/
-      http-request redirect scheme https code 301 unless letsencrypt
-      use_backend certbot if letsencrypt
-
-    frontend https
-      mode http
-      bind *:443 ssl crt /etc/letsencrypt/live/${domain}/fullchain.pem
-      http-request set-header X-Forwarded-Proto https
-      use_backend netbird-signal if { path_beg /signalexchange.SignalExchange/ } { hdr(host) -i netbird.${domain} }
-      use_backend netbird-management if { path_beg /management.ManagementService/ } { hdr(host) -i netbird.${domain} }
-      use_backend netbird-management if { path_beg /api } { hdr(host) -i netbird.${domain} }
-      use_backend netbird-dashboard if { hdr(host) -i netbird.${domain} }
-      ${domains}
-    ${if cfg.stats.enable then stats else ""}
-    ${backends}
-    backend certbot
-      mode http
-      server certbot 127.0.0.1:8403
+    ${lib.strings.concatStrings (lib.attrsets.mapAttrsToList (name: x: "frontend ${name}\n${indentStr (mkFrontend x)}") cfg.frontends)}
+    ${lib.strings.concatStrings (lib.attrsets.mapAttrsToList (name: x: "backend ${name}\n${indentStr (mkBackend x)}") cfg.backends)}
+    ${cfg.extraConfig}
   '';
 
+  haproxyCfg = pkgs.writeText "haproxy.conf" (mkHAProxyConfig cfg.settings);
+
+  certDomains = lib.attrsets.attrValues (builtins.mapAttrs (name: c: "${c.subdomain}.${domain}") config.ingress) ++ [ "netbird.${domain}" ];
+  certbotDomains = lib.strings.concatMapStringsSep "\\\n  " (s: "-d ${s}") certDomains;
   certbotCmd = address: port: ''
     ${pkgs.certbot}/bin/certbot certonly --standalone --cert-name ${domain} \
       --http-01-port ${builtins.toString port} --http-01-address ${address} \
@@ -159,6 +121,118 @@ with lib;
           description = lib.mdDoc "The internal port to serve the stats from";
         };
       };
+
+      settings = mkOption {
+        type = types.submodule {
+          options = {
+            extraConfig = mkOption {
+              type = types.lines;
+              default = "";
+            };
+
+            frontends = mkOption {
+              type = types.attrsOf (types.submodule {
+                options = {
+                  mode = mkOption {
+                    type = types.enum [ "http" "tcp" ];
+                    default = "http";
+                  };
+
+                  bind = mkOption {
+                    type = types.submodule {
+                      options = {
+                        address = mkOption {
+                          type = types.str;
+                          default = "";
+                        };
+
+                        port = mkOption {
+                          type = types.port;
+                        };
+
+                        interface = mkOption {
+                          type = types.nullOr types.str;
+                          default = null;
+                        };
+
+                        extraOptions = mkOption {
+                          type = types.separatedString " ";
+                          default = "";
+                        };
+                      };
+                    };
+                  };
+
+                  acls = mkOption {
+                    type = types.attrsOf types.str;
+                    default = {};
+                  };
+
+                  httpRequest = mkOption {
+                    type = types.listOf types.str;
+                    default = [];
+                  };
+
+                  useBackend = mkOption {
+                    type = types.listOf types.str;
+                    default = [];
+                  };
+
+                  defaultBackend = mkOption {
+                    type = types.nullOr types.str;
+                    default = null;
+                  };
+
+                  extraConfig = mkOption {
+                    type = types.lines;
+                    default = "";
+                  };
+                };
+              });
+            };
+
+            backends = mkOption {
+              type = types.attrsOf (types.submodule {
+                options = {
+                  mode = mkOption {
+                    type = types.enum [ "http" "tcp" ];
+                    default = "http";
+                  };
+
+                  timeout = mkOption {
+                    type = types.submodule {
+                      options = {
+                        client = mkOption {
+                          type = types.nullOr types.str;
+                          default = null;
+                        };
+                        server = mkOption {
+                          type = types.nullOr types.str;
+                          default = null;
+                        };
+                        connect = mkOption {
+                          type = types.nullOr types.str;
+                          default = null;
+                        };
+                      };
+                    };
+                    default = {
+                      client = null;
+                      server = null;
+                      connect = null;
+                    };
+                  };
+
+                  servers = mkOption {
+                    type = types.listOf types.str;
+                    default = [];
+                  };
+                };
+              });
+            };
+          };
+        };
+      };
     };
 
     ingress = mkOption {
@@ -219,6 +293,49 @@ with lib;
         LogsDirectory = "letsencrypt";
         ConfigurationDirectory = "letsencrypt";
       };
+    };
+
+    services.haproxy.settings = {
+      frontends = {
+        https = {
+           bind = {
+            address = "*";
+            port = 443;
+            extraOptions = "ssl crt /etc/letsencrypt/live/${domain}/fullchain.pem";
+          };
+          httpRequest = [ "set-header X-Forwarded-Proto https" ];
+          useBackend = lib.attrsets.mapAttrsToList (name: x:
+            "${name} if { hdr(host) -i ${x.subdomain}.${domain} }"
+          ) config.ingress;
+        };
+
+        http = mkIf cfg.letsencrypt {
+          bind = {
+            address = "*";
+            port = 80;
+          };
+          acls.letsencrypt = "path_beg /.well-known/acme-challenge/";
+          httpRequest = [ "redirect scheme https code 301 unless letsencrypt" ];
+          useBackend = [ "certbot if letsencrypt" ];
+        };
+
+        stats = mkIf cfg.stats.enable {
+          bind = {
+            address = "127.0.0.1";
+            port = cfg.stats.port;
+          };
+          extraConfig = ''
+            stats enable
+            stats uri /
+            stats refresh 10s
+          '';
+        };
+      };
+
+      backends = builtins.mapAttrs (name: x: { servers = [ "${name} ${x.address}:${builtins.toString x.port}" ]; }) config.ingress
+        // lib.attrsets.optionalAttrs cfg.letsencrypt {
+          certbot.servers = [ "certbot 127.0.0.1:8403" ];
+        };
     };
 
     systemd.services.haproxy = {

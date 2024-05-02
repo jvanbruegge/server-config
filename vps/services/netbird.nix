@@ -13,6 +13,24 @@ in {
     };
   };
 
+  services.haproxy.settings = {
+    frontends.https.useBackend = [
+      "netbird-signal if { path_beg /signalexchange.SignalExchange/ } { hdr(host) -i netbird.${domain} }"
+      "netbird-management if { path_beg /management.ManagementService/ } { hdr(host) -i netbird.${domain} }"
+      "netbird-management if { path_beg /api } { hdr(host) -i netbird.${domain} }"
+      "netbird-dashboard if { hdr(host) -i netbird.${domain} }"
+    ];
+    backends = {
+      netbird-dashboard.servers = [ "netbird 127.0.0.1:8080" ];
+      netbird-signal = {
+        timeout.client = "3600s";
+        timeout.server = "3600s";
+        servers = [ "netbird-signal 127.0.0.1:10000 check proto h2" ];
+      };
+      netbird-management.servers = [ "netbird-management 127.0.0.1:10001 check proto h2" ];
+    };
+  };
+
   services.netbird = {
     enable = true;
 
