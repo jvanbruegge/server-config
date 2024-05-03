@@ -39,6 +39,8 @@
         haproxy = ./modules/haproxy.nix;
       };
 
+      packages."${system}".immich = pkgs.callPackage ./pkgs/immich/default.nix {};
+
       devShells."${system}".default = pkgs.mkShell {
         packages = [
           deploy-rs.packages."${system}".default

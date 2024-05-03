@@ -1,0 +1,18 @@
+{
+  "version": "1.103.1",
+  "hash": "sha256-nUNPlsBw2CR4EVXaQNaorZRxyVYEDyLNRsOAqNlwkAc=",
+  "components": {
+    "cli": {
+      "npmDepsHash": "sha256-xf0tViWqQG+aJ1pBXbD4zPsTzWpeENGMrube/5r6UwU="
+    },
+    "server": {
+      "npmDepsHash": "sha256-hrdswSsQFKu7i214H082FU7BpS/OUp+6tCw4rY5ccRQ="
+    },
+    "web": {
+      "npmDepsHash": "sha256-yzDGBrhG3FvgZzQG1d5Bv6GzQB1fybYFqjgePgLn3m0="
+    },
+    "open-api/typescript-sdk": {
+      "npmDepsHash": "sha256-tKuhaheR0l6/9XmnYpUod+g8GLup/6LZ3K0dftdfw0s="
+    }
+  }
+}
