@@ -7,6 +7,13 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs = {
+    forceImportRoot = false;
+    extraPools = [ "zfspool" ];
+  };
+  networking.hostId = "24650b3a";
+
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
