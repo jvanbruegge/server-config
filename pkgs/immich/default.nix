@@ -2,24 +2,38 @@
 , pkgs
 , buildNpmPackage
 , fetchFromGitHub
-, fetchPypi
 , python3
 , nodejs
 , nixosTests
+, runCommand
 # build-time deps
 , pkg-config
 , makeWrapper
 , cmake
+, crane
 # runtime deps
 , ffmpeg
 , imagemagick
 , libraw
 , vips
+, perl
 }:
 let
   buildNpmPackage' = buildNpmPackage.override { inherit nodejs; };
   sources = lib.importJSON ./sources.json;
   inherit (sources) version;
+
+  # The geodata website is not versioned,
+  # so we have to extract it from the container
+  geodata = runCommand "immich-geodata" {
+    outputHash = sources.geodata_hash;
+    outputHashMode = "recursive";
+  } ''
+    mkdir $out
+    echo "Downloading immich container image"
+    ${crane}/bin/crane export ghcr.io/immich-app/base-server-prod:${sources.container_tag} - \
+      | tar -xv -C "$out" --strip-components=3 usr/src/resources
+  '';
 
   src = fetchFromGitHub {
     owner = "immich-app";
@@ -84,25 +98,20 @@ let
     src = "${src}/web";
     inherit (sources.components.web) npmDepsHash;
 
-    nativeBuildInputs = [
-      makeWrapper
-    ];
-
     inherit (cli) preBuild;
 
     installPhase = ''
       runHook preInstall
 
-      mkdir -p $out
-      mv package.json package-lock.json node_modules build $out/
-
-      makeWrapper ${nodejs}/bin/node $out/bin/immich-web --add-flags $out/build/index.js
+      cp -r build $out
 
       runHook postInstall
     '';
   };
 
-  machine-learning = python3.pkgs.buildPythonApplication {
+  python = python3;
+
+  machine-learning = python.pkgs.buildPythonApplication {
     pname = "immich-machine-learning";
     inherit version;
     src = "${src}/machine-learning";
@@ -111,21 +120,29 @@ let
     postPatch = ''
       rm poetry.lock
 
-      # opencv is named differently, also remove development dependencies not needed at runtime
+      # opencv is named differently
       substituteInPlace pyproject.toml \
-        --replace 'opencv-python-headless = ">=4.7.0.72,<5.0"' "" \
-        --replace 'setuptools = "^68.0.0"' 'setuptools = "*"' \
-        --replace 'pydantic = "^1.10.8"' ""
+        --replace-fail 'opencv-python-headless = ">=4.7.0.72,<5.0"' "" \
+        --replace-fail 'setuptools = "^68.0.0"' 'setuptools = "*"' \
+        --replace-fail 'fastapi-slim' 'fastapi' \
+        --replace-fail 'pydantic = "^1.10.8"' 'pydantic = "*"'
+
+      # Allow immich to use pydantic v2
+      substituteInPlace app/schemas.py --replace-fail 'pydantic' 'pydantic.v1'
+      substituteInPlace app/main.py --replace-fail 'pydantic' 'pydantic.v1'
+      substituteInPlace app/config.py \
+        --replace-fail 'pydantic' 'pydantic.v1' \
+        --replace-fail '/cache' '/var/cache/immich'
     '';
 
-    nativeBuildInputs = with python3.pkgs; [
+    nativeBuildInputs = with python.pkgs; [
       pythonRelaxDepsHook
       poetry-core
       cython
       makeWrapper
     ];
 
-    propagatedBuildInputs = with python3.pkgs; [
+    propagatedBuildInputs = with python.pkgs; [
       insightface
       opencv4
       pillow
@@ -140,35 +157,32 @@ let
       gunicorn
       huggingface-hub
       tokenizers
+      pydantic
     ] ++ python3.pkgs.uvicorn.optional-dependencies.standard;
 
-    /*nativeCheckInputs = with python3.pkgs; [
-      pytestCheckHook
-      pytest-asyncio
-      pytest-mock
-      httpx
-      pydantic
-    ];*/
     doCheck = false;
 
     postInstall = ''
       mkdir -p $out/share
       cp log_conf.json $out/share
+
+      cp -r ann $out/${python.sitePackages}/
+
       makeWrapper ${python3.pkgs.gunicorn}/bin/gunicorn $out/bin/machine-learning \
-        --prefix PYTHONPATH : "$PYTHONPATH" \
-        --add-flags "app.main:app -k uvicorn.workers.UvicornWorker \
+        --prefix PYTHONPATH : "$out/${python.sitePackages}:$PYTHONPATH" \
+        --set-default MACHINE_LEARNING_WORKERS 1 \
+        --set-default MACHINE_LEARNING_WORKER_TIMEOUT 120 \
+        --set-default IMMICH_HOST 127.0.0.1 \
+        --set-default IMMICH_PORT 3003 \
+        --add-flags "app.main:app -k app.config.CustomUvicornWorker \
           -w \"\$MACHINE_LEARNING_WORKERS\" \
-          -b \"\$MACHINE_LEARNING_HOST:\$MACHINE_LEARNING_PORT\" \
-          -t \"\$MACHINE_LEARNING_WORKER_TIMEOUT\" \
+          -b \"\$IMMICH_HOST:\$IMMICH_PORT\" \
+          -t \"\$MACHINE_LEARNING_WORKER_TIMEOUT\"
           --log-config-json $out/share/log_conf.json"
     '';
 
-    preCheck = ''
-      export TRANSFORMERS_CACHE=/tmp
-    '';
-
     passthru = {
-      inherit python3;
+      inherit python;
     };
   };
 in buildNpmPackage' {
@@ -192,37 +206,35 @@ in buildNpmPackage' {
 
   # Required because vips tries to write to the cache dir
   makeCacheWritable = true;
-  # TODO not working prePatch = ''
-  # TODO not working   export npm_config_libvips_local_prebuilds="/tmp"
-  # TODO not working '';
 
   installPhase = ''
     runHook preInstall
 
     npm config delete cache
-    npm prune --omit=dev --omit=optional
+    npm prune --omit=dev
 
     mkdir -p $out
-    mv package.json package-lock.json node_modules dist $out/
+    mv package.json package-lock.json node_modules dist resources $out/
+    ln -s ${web} $out/www
 
     makeWrapper ${nodejs}/bin/node $out/bin/admin-cli --add-flags $out/dist/main --add-flags cli
-    makeWrapper ${nodejs}/bin/node $out/bin/microservices --add-flags $out/dist/main --add-flags microservices
-    makeWrapper ${nodejs}/bin/node $out/bin/server --add-flags $out/dist/main --add-flags immich
+    makeWrapper ${nodejs}/bin/node $out/bin/server --add-flags $out/dist/main --chdir $out \
+      --set IMMICH_WEB_ROOT $out/www --set NODE_ENV production --set IMMICH_REVERSE_GEOCODING_ROOT ${geodata} \
+      --suffix PATH : "${lib.makeBinPath [ perl ]}"
 
     runHook postInstall
   '';
 
   passthru = {
-    #tests = { inherit (nixosTests) immich; };
-    inherit cli web machine-learning;
+    inherit cli web machine-learning geodata;
     updateScript = ./update.sh;
   };
 
   meta = with lib; {
     description = "Self-hosted photo and video backup solution";
     homepage = "https://immich.app/";
-    license = licenses.mit;
-    maintainers = with maintainers; [ jvanbruegge oddlama ];
+    license = licenses.agpl3Only;
+    maintainers = with maintainers; [ jvanbruegge ];
     inherit (nodejs.meta) platforms;
   };
 }
