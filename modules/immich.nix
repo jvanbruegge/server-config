@@ -38,7 +38,7 @@ in with lib; {
       type = types.str;
       default = "immich";
     };
-    machine-learning.enable = mkEnableOption "immich-machine-learning";
+    machine-learning.enable = mkEnableOption "immich-machine-learning" // { default = true; };
     database = {
       createDB = mkOption {
         type = types.bool;

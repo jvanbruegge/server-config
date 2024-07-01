@@ -10,6 +10,7 @@
     enable = true;
     host = "0.0.0.0";
     openFirewall = true;
+    mediaLocation = "/data/immich";
     secretsFile = "/run/secrets/immich";
     database.createDB = false;
   };
