@@ -18,6 +18,7 @@ in with lib; {
   config = mkIf (builtins.attrNames cfg != []) {
     services.postgresql = {
       enable = true;
+      package = pkgs.postgresql_16;
       ensureDatabases = builtins.attrNames cfg;
       ensureUsers = attrsets.mapAttrsToList (name: opts: {
         inherit name;

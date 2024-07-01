@@ -6,6 +6,16 @@
 
   services.netbird.enable = true;
 
+  services.immich = {
+    enable = true;
+    host = "0.0.0.0";
+    openFirewall = true;
+    secretsFile = "/run/secrets/immich";
+    database.createDB = false;
+  };
+  sops.secrets.immich = {};
+  database.immich = {};
+
   services.audiobookshelf = {
     enable = true;
     host = "0.0.0.0";

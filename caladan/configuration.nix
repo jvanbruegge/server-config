@@ -6,8 +6,6 @@
 
   _module.args.domain = "caladan.net.cerberus-systems.de";
 
-  services.immich.enable = true;
-
   security.sudo.configFile =
     ''
     Defaults:root,%wheel env_keep+=LOCALE_ARCHIVE
