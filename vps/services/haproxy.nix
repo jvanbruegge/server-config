@@ -12,4 +12,10 @@
     address = "caladan.net.${domain}";
     port = 8234;
   };
+
+  ingress.immich = {
+    subdomain = "immich";
+    address = "caladan.net.${domain}";
+    port = 3001;
+  };
 }

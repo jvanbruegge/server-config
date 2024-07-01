@@ -4,12 +4,7 @@
     ./services.nix
   ];
 
-  boot.supportedFilesystems = [ "zfs" ];
-  boot.zfs = {
-    forceImportRoot = false;
-    extraPools = [ "zfspool" ];
-  };
-  networking.hostId = "24650b3a";
+  _module.args.domain = "caladan.net.cerberus-systems.de";
 
   security.sudo.configFile =
     ''

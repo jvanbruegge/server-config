@@ -1,3 +1,4 @@
 .vagrant/
 .direnv/
 run.sh
+result

@@ -17,7 +17,7 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages."${system}";
-      mkSystem = name: mode: nixpkgs.lib.nixosSystem {
+      mkSystem = name: mode: modules: nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = inputs;
         modules = [
@@ -25,19 +25,23 @@
           ./modules.nix
           ./${name}/default.nix
           ./${name}/hardware-configuration.${mode}.nix
-          ./settings.${mode}.nix
-        ];
+        ] ++ modules;
       };
-      mkServer = name: {
-        "${name}" = mkSystem name "prod";
-        "${name}Dev" = mkSystem name "dev";
+      mkServer = name: modules: {
+        "${name}" = mkSystem name "prod" (modules "prod");
+        "${name}Dev" = mkSystem name "dev" (modules "dev");
       };
     in {
-      nixosConfigurations = nixpkgs.lib.attrsets.mergeAttrsList (builtins.map mkServer [ "vps" "caladan" ]);
+      nixosConfigurations = nixpkgs.lib.attrsets.mergeAttrsList [
+        (mkServer "vps" (mode: [ ./settings.${mode}.nix ]))
+        (mkServer "caladan" (_: []))
+      ];
 
       nixosModules = {
         haproxy = ./modules/haproxy.nix;
       };
+
+      packages."${system}".immich = pkgs.callPackage ./pkgs/immich/default.nix {};
 
       devShells."${system}".default = pkgs.mkShell {
         packages = [

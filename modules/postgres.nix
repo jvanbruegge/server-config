@@ -5,7 +5,12 @@ let
 in with lib; {
   options.database = mkOption {
     type = types.attrsOf (types.submodule {
-      options = { };
+      options = {
+        superuser = mkOption {
+          type = types.bool;
+          default = false;
+        };
+      };
     });
     default = {};
   };
@@ -13,11 +18,15 @@ in with lib; {
   config = mkIf (builtins.attrNames cfg != []) {
     services.postgresql = {
       enable = true;
+      package = pkgs.postgresql_16;
       ensureDatabases = builtins.attrNames cfg;
       ensureUsers = attrsets.mapAttrsToList (name: opts: {
         inherit name;
         ensureDBOwnership = true;
-        ensureClauses.login = true;
+        ensureClauses = {
+          login = true;
+          superuser = opts.superuser;
+        };
       }) cfg;
     };
 
