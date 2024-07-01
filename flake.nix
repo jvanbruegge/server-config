@@ -39,6 +39,7 @@
 
       nixosModules = {
         haproxy = ./modules/haproxy.nix;
+        immich = ./modules/immich.nix;
       };
 
       packages."${system}".immich = pkgs.callPackage ./pkgs/immich/default.nix {};
