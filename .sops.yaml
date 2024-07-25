@@ -3,7 +3,7 @@ keys:
   - &server_vpsDev age1wv4uny737yrw264eegdpmhhffkm34d0v6677fwn4hstgallr339sm0a9rc
   - &server_vps  age1gw9jwanpejdw4pwu0c7cc768rl0na4t3upcjvm5uhplkp07ersss6g40pp
   - &server_caladan age18544ku26z3czep5cyn2jvlxpfn2kml3zrplg8ughcwhrseavna3q54s293
-  - &server_caladanDev age1d9ztpa5j00n9k2qhzxl67gy0walzg25q9yt3fs6494wyx0d0k4aqcem9v0
+  - &server_caladanDev age1x9d2zsmm08svsxharukxqdnzc0x4ll9zwxsm49j7hppkpxtwzcxs36ewek
 creation_rules:
   - path_regex: secrets/vps[^/]+$
     key_groups:
