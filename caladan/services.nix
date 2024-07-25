@@ -1,13 +1,15 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, immich, ... }:
 {
   imports = [
     ./paperless.nix
+    "${immich}/nixos/modules/services/web-apps/immich.nix"
   ];
 
   services.netbird.enable = true;
 
   services.immich = {
     enable = true;
+    package = immich.legacyPackages.x86_64-linux.immich;
     host = "0.0.0.0";
     openFirewall = true;
     mediaLocation = "/data/immich";

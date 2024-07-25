@@ -38,6 +38,22 @@
         "type": "github"
       }
     },
+    "immich": {
+      "locked": {
+        "lastModified": 1721949326,
+        "narHash": "sha256-4En/oLY5c/YK4oGQIqagcKPfgDG2RrHZCNtthmpgrBk=",
+        "owner": "jvanbruegge",
+        "repo": "nixpkgs",
+        "rev": "7290604575975813a9cf845be6690744ae528d61",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jvanbruegge",
+        "ref": "immich",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1721743106,
@@ -73,6 +89,7 @@
     "root": {
       "inputs": {
         "deploy-rs": "deploy-rs",
+        "immich": "immich",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix"
       }

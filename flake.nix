@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    immich.url = "github:jvanbruegge/nixpkgs/immich";
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -39,10 +40,7 @@
 
       nixosModules = {
         haproxy = ./modules/haproxy.nix;
-        immich = ./modules/immich.nix;
       };
-
-      packages."${system}".immich = pkgs.callPackage ./pkgs/immich/default.nix {};
 
       devShells."${system}".default = pkgs.mkShell {
         packages = [
