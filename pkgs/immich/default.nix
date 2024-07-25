@@ -23,6 +23,14 @@ let
   sources = lib.importJSON ./sources.json;
   inherit (sources) version;
 
+  meta = with lib; {
+    description = "Self-hosted photo and video backup solution";
+    homepage = "https://immich.app/";
+    license = licenses.agpl3Only;
+    maintainers = with maintainers; [ jvanbruegge ];
+    inherit (nodejs.meta) platforms;
+  };
+
   # The geodata website is not versioned,
   # so we have to extract it from the container
   geodata = runCommand "immich-geodata" {
@@ -63,7 +71,7 @@ let
 
   cli = buildNpmPackage' {
     pname = "immich-cli";
-    inherit version;
+    inherit version meta;
     src = "${src}/cli";
     inherit (sources.components.cli) npmDepsHash;
 
@@ -86,10 +94,12 @@ let
 
       ls $out/dist
 
-      makeWrapper ${nodejs}/bin/node $out/bin/immich-cli --add-flags $out/dist/index.js
+      makeWrapper ${nodejs}/bin/node $out/bin/immich --add-flags $out/dist/index.js
 
       runHook postInstall
     '';
+
+    meta.mainProgram = "immich";
   };
 
   web = buildNpmPackage' {
@@ -187,7 +197,7 @@ let
   };
 in buildNpmPackage' {
   pname = "immich";
-  inherit version;
+  inherit version meta;
   src = "${src}/server";
   inherit (sources.components.server) npmDepsHash;
 
@@ -228,13 +238,5 @@ in buildNpmPackage' {
   passthru = {
     inherit cli web machine-learning geodata;
     updateScript = ./update.sh;
-  };
-
-  meta = with lib; {
-    description = "Self-hosted photo and video backup solution";
-    homepage = "https://immich.app/";
-    license = licenses.agpl3Only;
-    maintainers = with maintainers; [ jvanbruegge ];
-    inherit (nodejs.meta) platforms;
   };
 }
