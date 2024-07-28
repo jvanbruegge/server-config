@@ -2,6 +2,7 @@
 {
   imports = [
     ./services.nix
+    ./router.nix
   ];
 
   _module.args.domain = "caladan.net.cerberus-systems.de";
