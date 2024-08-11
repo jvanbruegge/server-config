@@ -40,11 +40,11 @@
     },
     "immich": {
       "locked": {
-        "lastModified": 1721949326,
-        "narHash": "sha256-4En/oLY5c/YK4oGQIqagcKPfgDG2RrHZCNtthmpgrBk=",
+        "lastModified": 1723391208,
+        "narHash": "sha256-/XYgMUFCTx1oMt4Yrw9xO9BkkiVzhufCEJPOGaIby5g=",
         "owner": "jvanbruegge",
         "repo": "nixpkgs",
-        "rev": "7290604575975813a9cf845be6690744ae528d61",
+        "rev": "c0ee4c1770aa1ef998c977c4cc653a07ec95d9bf",
         "type": "github"
       },
       "original": {
