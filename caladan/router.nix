@@ -1,6 +1,21 @@
 { config, pkgs, domain, ... }:
 let
   name = "wlp41s0f4u1";
+  name2G = "wlp41s0f3u4";
+
+  commonRadioSettings = {
+    countryCode = "GB";
+    wifi4.capabilities = [
+      "LDPC"
+      "HT40+"
+      "HT40-"
+      "GF"
+      "SHORT-GI-20"
+      "SHORT-GI-40"
+      "TX-STBC"
+      "RX-STBC1"
+    ];
+  };
 in {
   networking.useNetworkd = true;
 
@@ -48,33 +63,33 @@ in {
   services.hostapd = {
     enable = true;
 
-    radios.${name} = {
-      countryCode = "GB";
-      band = "5g";
-      channel = 36;
+    radios = {
+      ${name} = commonRadioSettings // {
+        band = "5g";
+        channel = 36;
 
-      wifi4.capabilities = [
-        "LDPC"
-        "HT40+"
-        "HT40-"
-        "GF"
-        "SHORT-GI-20"
-        "SHORT-GI-40"
-        "TX-STBC"
-        "RX-STBC1"
-      ];
+        wifi5.capabilities = [
+          "RXLDPC"
+          "SHORT-GI-80"
+          "RX-ANTENNA-PATTERN"
+          "TX-ANTENNA-PATTERN"
+        ];
 
-      wifi5.capabilities = [
-        "RXLDPC"
-        "SHORT-GI-80"
-        "RX-ANTENNA-PATTERN"
-        "TX-ANTENNA-PATTERN"
-      ];
+        networks.${name} = {
+          settings.bridge = "br0";
+          ssid = "THE_PENGUIN";
+          authentication.saePasswordsFile = config.sops.secrets.wlan.path;
+        };
+      };
 
-      networks.${name} = {
-        settings.bridge = "br0";
-        ssid = "THE_PENGUIN";
-        authentication.saePasswordsFile = config.sops.secrets.wlan.path;
+      ${name2G} = commonRadioSettings // {
+        band = "2g";
+        channel = 7;
+        networks.${name2G} = {
+          settings.bridge = "br0";
+          ssid = "THE_PENGUIN";
+          authentication.saePasswordsFile = config.sops.secrets.wlan.path;
+        };
       };
     };
   };
