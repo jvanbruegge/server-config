@@ -1,4 +1,4 @@
-{ pkgs, lib, domain, config, ... }:
+{ pkgs, lib, domain, utils, ... }:
 let
   NETBIRD_DOMAIN = "netbird.${domain}";
   client_id = "kLVxL9B0tZNwR8VYWWE8DHoXpvjLDnErpkgTEQDa";
@@ -129,6 +129,21 @@ in {
   systemd.services.netbird-signal.serviceConfig = {
     User = "netbird";
     Group = "netbird";
+    ExecStart = lib.mkForce (utils.escapeSystemdExecArgs [
+      (lib.getExe' pkgs.netbird "netbird-signal")
+      "run"
+      # Port to listen on
+      "--port"
+      "10000"
+      # Log to stdout
+      "--log-file"
+      "console"
+      # Log level
+      "--log-level"
+      "INFO"
+      "--metrics-port"
+      "9091"
+    ]);
   };
 
   security.acme.certs = lib.mkForce {};
