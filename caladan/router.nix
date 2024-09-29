@@ -78,7 +78,11 @@ in {
         networks.${name} = {
           settings.bridge = "br0";
           ssid = "THE_PENGUIN";
-          authentication.saePasswordsFile = config.sops.secrets.wlan.path;
+          authentication = {
+            saePasswordsFile = config.sops.secrets.wlan.path;
+            wpaPasswordFile = config.sops.secrets.wlan.path;
+            mode = "wpa3-sae-transition";
+          };
         };
       };
 
@@ -88,7 +92,11 @@ in {
         networks.${name2G} = {
           settings.bridge = "br0";
           ssid = "THE_PENGUIN";
-          authentication.saePasswordsFile = config.sops.secrets.wlan.path;
+          authentication = {
+            saePasswordsFile = config.sops.secrets.wlan.path;
+            wpaPasswordFile = config.sops.secrets.wlan.path;
+            mode = "wpa3-sae-transition";
+          };
         };
       };
     };
