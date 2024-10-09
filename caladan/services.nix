@@ -2,6 +2,7 @@
 {
   imports = [
     ./paperless.nix
+    ./linkwarden.nix
   ];
 
   services.netbird.enable = true;

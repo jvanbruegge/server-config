@@ -9,7 +9,7 @@
       ./services/netbird.nix
       ./services/borgbackup.nix
     ];
-  
+
   security.sudo.configFile =
     ''
     Defaults:root,%wheel env_keep+=LOCALE_ARCHIVE

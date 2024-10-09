@@ -38,6 +38,22 @@
         "type": "github"
       }
     },
+    "linkwarden": {
+      "locked": {
+        "lastModified": 1728484014,
+        "narHash": "sha256-7IMblJ/L4wVLVXvkn6bdSvzN7cJJ4l/ZFfizNvnCuzI=",
+        "owner": "jvanbruegge",
+        "repo": "nixpkgs",
+        "rev": "75c84ce6cc2c8e0ae8820e3419b30ea6b4fd6799",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jvanbruegge",
+        "ref": "linkwarden",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1727634051,
@@ -73,6 +89,7 @@
     "root": {
       "inputs": {
         "deploy-rs": "deploy-rs",
+        "linkwarden": "linkwarden",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix"
       }

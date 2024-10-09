@@ -18,4 +18,10 @@
     address = "caladan.net.${domain}";
     port = 3001;
   };
+
+  ingress.linkwarden = {
+    subdomain = "linkwarden";
+    address = "caladan.net.${domain}";
+    port = 3000;
+  };
 }
