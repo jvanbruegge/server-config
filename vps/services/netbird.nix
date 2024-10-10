@@ -14,12 +14,17 @@ in {
   };
 
   services.haproxy.settings = {
-    frontends.https.useBackend = [
-      "netbird-signal if { path_beg /signalexchange.SignalExchange/ } { hdr(host) -i netbird.${domain} }"
-      "netbird-management if { path_beg /management.ManagementService/ } { hdr(host) -i netbird.${domain} }"
-      "netbird-management if { path_beg /api } { hdr(host) -i netbird.${domain} }"
-      "netbird-dashboard if { hdr(host) -i netbird.${domain} }"
-    ];
+    frontends.https = {
+      useBackend = [
+        "netbird-signal if { path_beg /signalexchange.SignalExchange/ } { hdr(host) -i netbird.${domain} }"
+        "netbird-management if { path_beg /management.ManagementService/ } { hdr(host) -i netbird.${domain} }"
+        "netbird-management if { path_beg /api } { hdr(host) -i netbird.${domain} }"
+        "netbird-dashboard if { hdr(host) -i netbird.${domain} }"
+      ];
+      httpRequest = [
+        "set-log-level silent if { path_beg /signalexchange.SignalExchange/ } { hdr(host) -i netbird.${domain} }"
+      ];
+    };
     backends = {
       netbird-dashboard.servers = [ "netbird 127.0.0.1:8080" ];
       netbird-signal = {
