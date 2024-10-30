@@ -22,9 +22,26 @@ in {
   boot.kernel.sysctl = {
     "net.ipv4.conf.all.forwarding" = true;
     "net.ipv6.conf.all.forwarding" = true;
+    "net.ipv6.conf.all.accept_ra" = 0;
+    "net.ipv6.conf.all.autoconf" = 0;
+    "net.ipv6.conf.all.use_tempaddr" = 0;
+
+    "net.ipv6.conf.ppp0.accept_ra" = 2;
+    "net.ipv6.conf.ppp0.autoconf" = 1;
   };
 
-  networking.firewall.allowedUDPPorts = [ 67 68 ];
+  networking.nat = {
+    enable = true;
+    internalInterfaces = [ "br0" ];
+    externalInterface = "ppp0";
+  };
+
+  networking.firewall = {
+    allowedUDPPorts = [ 67 68 546 ];
+    extraCommands = ''
+      iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS  --clamp-mss-to-pmtu
+    '';
+  };
 
   # WAN connection
   services.pppd = {
@@ -34,6 +51,8 @@ in {
 
       # network interface
       enp39s0
+
+      +ipv6 ipv6cp-use-ipaddr
 
       # login name
       name "bthomehub@btbroadband.com"
@@ -70,14 +89,17 @@ in {
       networkConfig = {
         Address = "192.168.0.1/24";
         DHCPServer = true;
-        IPMasquerade = true;
+        #IPMasquerade = "both";
+        /*IPv6SendRA = true;
+        DHCPv6PrefixDelegation = true;
+        IPv6PrivacyExtensions = true;*/
       };
 
       dhcpServerConfig = {
         PoolOffset = 50;
         PoolSize = 100;
         EmitDNS = true;
-        DNS = "1.1.1.1";
+        DNS = [ "1.1.1.1" "8.8.8.8" ];
       };
     };
   };
