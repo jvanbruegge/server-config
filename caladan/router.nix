@@ -19,6 +19,31 @@ let
 in {
   networking.useNetworkd = true;
 
+  boot.kernel.sysctl = {
+    "net.ipv4.conf.all.forwarding" = true;
+    "net.ipv6.conf.all.forwarding" = true;
+  };
+
+  networking.firewall.allowedUDPPorts = [ 67 68 ];
+
+  # WAN connection
+  services.pppd = {
+    enable = true;
+    peers.BT.config = ''
+      plugin pppoe.so
+
+      # network interface
+      enp39s0
+
+      # login name
+      name "bthomehub@btbroadband.com"
+      password "BT"
+      persist
+      defaultroute
+      noauth
+    '';
+  };
+
   systemd.network = {
     enable = true;
     wait-online.anyInterface = true;
@@ -43,18 +68,17 @@ in {
 
       matchConfig.Name = "br0";
       networkConfig = {
-        Address = "192.168.1.145/24";
-        Gateway = "192.168.1.254";
-        DNS = "1.1.1.1";
-        #DHCPServer = true;
+        Address = "192.168.0.1/24";
+        DHCPServer = true;
+        IPMasquerade = true;
       };
 
-      /*dhcpServerConfig = {
+      dhcpServerConfig = {
         PoolOffset = 50;
         PoolSize = 100;
         EmitDNS = true;
         DNS = "1.1.1.1";
-      };*/
+      };
     };
   };
 
