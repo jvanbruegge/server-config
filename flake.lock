@@ -40,11 +40,11 @@
     },
     "linkwarden": {
       "locked": {
-        "lastModified": 1728484014,
-        "narHash": "sha256-7IMblJ/L4wVLVXvkn6bdSvzN7cJJ4l/ZFfizNvnCuzI=",
+        "lastModified": 1731539581,
+        "narHash": "sha256-I0dwXnuZxVwdbkemE0wGTBEk22bGp07XPTbt0fXlVao=",
         "owner": "jvanbruegge",
         "repo": "nixpkgs",
-        "rev": "75c84ce6cc2c8e0ae8820e3419b30ea6b4fd6799",
+        "rev": "aa7a032a27a99f5a7da084b60c6d013d20d74590",
         "type": "github"
       },
       "original": {

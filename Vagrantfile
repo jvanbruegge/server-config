@@ -28,6 +28,7 @@ Vagrant.configure("2") do |config|
 
     c.vm.network "private_network", ip: "192.168.56.11"
     config.vm.network "forwarded_port", guest: 3001, host: 3001, auto_correct: true
+    config.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true
   end
 
 end
