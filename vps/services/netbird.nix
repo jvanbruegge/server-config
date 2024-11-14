@@ -14,6 +14,9 @@ in {
   };
 
   services.haproxy.settings = {
+    extraDomains = [
+      "netbird.${domain}"
+    ];
     frontends.https = {
       useBackend = [
         "netbird-signal if { path_beg /signalexchange.SignalExchange/ } { hdr(host) -i netbird.${domain} }"

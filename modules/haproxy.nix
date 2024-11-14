@@ -45,10 +45,10 @@ let
 
   haproxyCfg = pkgs.writeText "haproxy.conf" (mkHAProxyConfig cfg.settings);
 
-  certDomains = lib.attrsets.attrValues (builtins.mapAttrs (name: c: "${c.subdomain}.${domain}") config.ingress) ++ [ "netbird.${domain}" ];
+  certDomains = lib.attrsets.attrValues (builtins.mapAttrs (name: c: "${c.subdomain}.${cfg.settings.domain}") config.ingress) ++ cfg.settings.extraDomains;
   certbotDomains = lib.strings.concatMapStringsSep "\\\n  " (s: "-d ${s}") certDomains;
   certbotCmd = address: port: ''
-    ${pkgs.certbot}/bin/certbot certonly --standalone --cert-name ${domain} \
+    ${pkgs.certbot}/bin/certbot certonly --standalone --cert-name ${cfg.settings.domain} \
       --http-01-port ${builtins.toString port} --http-01-address ${address} \
       --non-interactive --keep --agree-tos --email ${email} --expand \
       ${certbotDomains}
@@ -69,7 +69,7 @@ let
     done
     if ! $all_good; then
       ${certbotCmd "0.0.0.0" 80}
-      ${pkgs.coreutils}/bin/ln -sf /etc/letsencrypt/live/${domain}/privkey.pem /etc/letsencrypt/live/${domain}/fullchain.pem.key
+      ${pkgs.coreutils}/bin/ln -sf /etc/letsencrypt/live/${cfg.settings.domain}/privkey.pem /etc/letsencrypt/live/${cfg.settings.domain}/fullchain.pem.key
     fi
   '';
 in
@@ -128,6 +128,16 @@ with lib;
             extraConfig = mkOption {
               type = types.lines;
               default = "";
+            };
+
+            domain = mkOption {
+              type = types.str;
+              default = domain;
+            };
+
+            extraDomains = mkOption {
+              type = types.listOf types.str;
+              default = [];
             };
 
             frontends = mkOption {
@@ -301,11 +311,11 @@ with lib;
            bind = {
             address = "*";
             port = 443;
-            extraOptions = "ssl crt /etc/letsencrypt/live/${domain}/fullchain.pem";
+            extraOptions = "ssl crt /etc/letsencrypt/live/${cfg.settings.domain}/fullchain.pem";
           };
           httpRequest = [ "set-header X-Forwarded-Proto https" ];
           useBackend = lib.attrsets.mapAttrsToList (name: x:
-            "${name} if { hdr(host) -i ${x.subdomain}.${domain} }"
+            "${name} if { hdr(host) -i ${x.subdomain}.${cfg.settings.domain} }"
           ) config.ingress;
         };
 
