@@ -46,6 +46,26 @@
         packages = [
           deploy-rs.packages."${system}".default
           pkgs.sops
+          (pkgs.writeShellScriptBin "deploy-diff" ''
+            #!${pkgs.bash}/bin/bash
+            host=$2
+            if [ -z "$host" ]; then
+              host=$1
+            fi
+            set -eou pipefail
+
+            trap 'rm wait.fifo' EXIT
+            mkfifo wait.fifo
+
+            deploy --debug-logs --dry-activate ".#$1" 2>&1 \
+              | tee >(grep -v DEBUG) >(grep 'activate-rs --debug-logs activate' | \
+                  sed -e 's/^.*activate-rs --debug-logs activate \(.*\) --profile-user.*$/\1/' | \
+                  xargs -I% bash -xc "ssh $host 'nix store diff-closures /run/current-system %'" | \
+                  grep '→' ; echo >wait.fifo) \
+              >/dev/null
+
+            read <wait.fifo
+          '')
         ];
       };
 
