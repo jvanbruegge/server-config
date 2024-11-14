@@ -23,6 +23,19 @@
     settings.domain = "caladan.${domain}";
   };
 
+  # Jellyfin
+  networking.firewall.interfaces.br0.allowedUDPPorts = [ 1900 7359 ];
+  ingress.jellyfin = {
+    subdomain = "jellyfin";
+    port = 8096;
+  };
+  services.jellyfin = {
+    enable = true;
+    logDir = "/var/log/jellyfin";
+    dataDir = "/data/jellyfin";
+  };
+  systemd.services.jellyfin.serviceConfig.LogsDirectory = "jellyfin";
+
   networking.firewall.allowedUDPPorts = [ 53 ];
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   services.blocky = {
@@ -58,6 +71,37 @@
     openFirewall = true;
 
     shares = {
+      movies = {
+        path = "/data/movies";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "directory mask" = "0755";
+        "create mask" = "0644";
+        "force user" = "jellyfin";
+        "force group" = "jellyfin";
+      };
+      music = {
+        path = "/data/music";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "directory mask" = "0755";
+        "create mask" = "0644";
+        "force user" = "jellyfin";
+        "force group" = "jellyfin";
+      };
+      series = {
+        path = "/data/series";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "directory mask" = "0755";
+        "create mask" = "0644";
+        "force user" = "jellyfin";
+        "force group" = "jellyfin";
+      };
+
       audiobooks = {
         path = "/data/audiobooks";
         browseable = "yes";
