@@ -44,6 +44,11 @@ let
     rm -d $dir
   '';
 in {
+  ingress.paperless = {
+    subdomain = "paperless";
+    port = 28981;
+  };
+
   services.paperless = {
     enable = true;
     dataDir = "/data/paperless/data";
@@ -90,7 +95,7 @@ in {
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 28981 ];
+  networking.firewall.interfaces.wt0.allowedTCPPorts = [ 28981 ];
 
   nixpkgs.config.allowlistedLicenses = with lib.licenses; [ epson ];
   hardware.sane = {

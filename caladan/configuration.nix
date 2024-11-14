@@ -3,9 +3,8 @@
   imports = [
     ./services.nix
     ./router.nix
+    ../settings.prod.nix
   ];
-
-  _module.args.domain = "caladan.net.cerberus-systems.de";
 
   security.sudo.configFile =
     ''

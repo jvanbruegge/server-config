@@ -99,7 +99,7 @@ in {
         PoolOffset = 50;
         PoolSize = 100;
         EmitDNS = true;
-        DNS = [ "1.1.1.1" "8.8.8.8" ];
+        DNS = [ "192.168.0.1" ];
       };
     };
   };
