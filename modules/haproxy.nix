@@ -140,6 +140,11 @@ with lib;
               default = [];
             };
 
+            defaultFrontends = mkOption {
+              type = types.bool;
+              default = true;
+            };
+
             frontends = mkOption {
               type = types.attrsOf (types.submodule {
                 options = {
@@ -306,7 +311,7 @@ with lib;
     };
 
     services.haproxy.settings = {
-      frontends = {
+      frontends = mkIf cfg.settings.defaultFrontends {
         https = {
            bind = {
             address = "*";

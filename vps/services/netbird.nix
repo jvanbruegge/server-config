@@ -17,7 +17,7 @@ in {
     extraDomains = [
       "netbird.${domain}"
     ];
-    frontends.https = {
+    frontends.httpsLocal = {
       useBackend = [
         "netbird-signal if { path_beg /signalexchange.SignalExchange/ } { hdr(host) -i netbird.${domain} }"
         "netbird-management if { path_beg /management.ManagementService/ } { hdr(host) -i netbird.${domain} }"
