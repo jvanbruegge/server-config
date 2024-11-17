@@ -20,6 +20,8 @@
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
 
+  hardware.graphics.enable = true;
+
   users = import ../users.nix;
 
   services.resolved.enable = true;

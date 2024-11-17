@@ -35,6 +35,7 @@
     dataDir = "/data/jellyfin";
   };
   systemd.services.jellyfin.serviceConfig.LogsDirectory = "jellyfin";
+  users.users.jellyfin.extraGroups = [ "render" ];
 
   networking.firewall.allowedUDPPorts = [ 53 ];
   networking.firewall.allowedTCPPorts = [ 80 443 ];
