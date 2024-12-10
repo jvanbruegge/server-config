@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     linkwarden.url = "github:jvanbruegge/nixpkgs/linkwarden";
+    authentik.url = "github:jvanbruegge/nixpkgs/authentik-2024.10";
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
