@@ -2,7 +2,6 @@
 {
   services.authentik = {
     enable = true;
-    package = authentik.legacyPackages.x86_64-linux.authentik;
     outposts.ldap.enable = false;
   };
 
