@@ -1,4 +1,4 @@
-{ pkgs, lib, domain, ... }:
+{ pkgs, lib, domain, server, ... }:
 {
   services.vaultwarden = {
     enable = true;
@@ -22,7 +22,7 @@
     port = 8222;
   };
 
-  services.borgbackup.jobs.vaultwarden = import ../../backup.nix domain "vaultwarden" {
+  services.borgbackup.jobs.vaultwarden = import ../../backup.nix domain server "vaultwarden" {
     paths = [ "/var/backup/vaultwarden" ];
   };
 

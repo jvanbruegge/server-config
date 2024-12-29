@@ -1,4 +1,4 @@
-{ pkgs, lib, domain, config, ... }:
+{ pkgs, lib, domain, config, server, ... }:
 {
   services.tandoor-recipes = {
     enable = true;
@@ -54,7 +54,7 @@
     port = 8778;
   };
 
-  services.borgbackup.jobs.tandoor-media = import ../../backup.nix domain "tandoor" {
+  services.borgbackup.jobs.tandoor-media = import ../../backup.nix domain server "tandoor" {
     paths = [ "/var/lib/tandoor-recipes/" ];
   };
 

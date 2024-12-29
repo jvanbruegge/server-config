@@ -13,6 +13,13 @@
     Defaults lecture = never
     '';
 
+  sops.secrets.borg_ssh_key = {
+    format = "binary";
+    sopsFile = ../secrets/borg.key;
+  };
+
+  _module.args.server = "caladan";
+
   services.openssh.enable = true;
 
   sops = {

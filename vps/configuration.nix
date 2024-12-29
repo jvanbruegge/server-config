@@ -10,6 +10,8 @@
       ./services/borgbackup.nix
     ];
 
+  _module.args.server = "vps";
+
   security.sudo.configFile =
     ''
     Defaults:root,%wheel env_keep+=LOCALE_ARCHIVE

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, domain, email, ... }:
+{ config, lib, pkgs, domain, server, ... }:
 
 let
   cfg = config.database;
@@ -41,7 +41,7 @@ in with lib; {
       startAt = "*-*-* 23:00:00";
     };
 
-    services.borgbackup.jobs.postgresql = import ../backup.nix domain "postgresql" {
+    services.borgbackup.jobs.postgresql = import ../backup.nix domain server "postgresql" {
       paths = [ "/var/backup/postgresql" ];
     };
   };
