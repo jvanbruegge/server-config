@@ -1,8 +1,9 @@
-{ pkgs, lib, domain, config, server, ... }:
+{ pkgs, lib, domain, config, server, tandoor, ... }:
 {
   services.tandoor-recipes = {
     enable = true;
     port = 8410;
+    package = tandoor.legacyPackages.x86_64-linux.tandoor-recipes;
     address = "127.0.0.1";
     extraConfig = {
       TIMEZONE = "Europe/Berlin";

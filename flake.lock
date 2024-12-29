@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "authentik": {
-      "locked": {
-        "lastModified": 1735040187,
-        "narHash": "sha256-jeXhHeniURiM4zyp9I4cjdC/39KAaNM9DJRJ671neeQ=",
-        "owner": "jvanbruegge",
-        "repo": "nixpkgs",
-        "rev": "813e4811fdcce384123956a505bb310dbe2854ee",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jvanbruegge",
-        "ref": "authentik-2024.10",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "deploy-rs": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -56,11 +40,11 @@
     },
     "linkwarden": {
       "locked": {
-        "lastModified": 1734944323,
-        "narHash": "sha256-TyMbTdavcDC5CIRmJTus0ZTI1/s7h1FxSILCg8zLpy8=",
+        "lastModified": 1735486844,
+        "narHash": "sha256-26ZjbIUizfQ4g/4Ax3OTerYeiPjwWhDuYe3L/gpgRRI=",
         "owner": "jvanbruegge",
         "repo": "nixpkgs",
-        "rev": "546b2c0687971133e3b1640eeeecb8e7df239234",
+        "rev": "3d97e49b4d5f6bf9d22cfe2d6c7367e462e35d35",
         "type": "github"
       },
       "original": {
@@ -88,11 +72,11 @@
     },
     "root": {
       "inputs": {
-        "authentik": "authentik",
         "deploy-rs": "deploy-rs",
         "linkwarden": "linkwarden",
         "nixpkgs": "nixpkgs",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "tandoor": "tandoor"
       }
     },
     "sops-nix": {
@@ -127,6 +111,22 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tandoor": {
+      "locked": {
+        "lastModified": 1735489990,
+        "narHash": "sha256-mWLUTuzwdobigxgantcm+0nan8WgpU3AbdvAVJLElo0=",
+        "owner": "jvanbruegge",
+        "repo": "nixpkgs",
+        "rev": "ef700dbfe445ed93967ca7dab40104ef444d40b7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jvanbruegge",
+        "ref": "fix-tandoor",
+        "repo": "nixpkgs",
         "type": "github"
       }
     },
