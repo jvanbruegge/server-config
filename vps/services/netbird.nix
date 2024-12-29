@@ -13,6 +13,12 @@ in {
     };
   };
 
+  nixpkgs.overlays = [ (_: prev: {
+    coturn = prev.coturn.override {
+      libpromhttp = prev.libprom;
+    };
+  }) ];
+
   services.haproxy.settings = {
     extraDomains = [
       "netbird.${domain}"
