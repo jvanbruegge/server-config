@@ -6,6 +6,10 @@
     ../settings.prod.nix
   ];
 
+  nixpkgs.overlays = [ (_: prev: {
+    immich = prev.immich.override { nodejs = prev.nodejs_20; };
+  }) ];
+
   security.sudo.configFile =
     ''
     Defaults:root,%wheel env_keep+=LOCALE_ARCHIVE
