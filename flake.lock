@@ -116,11 +116,11 @@
     },
     "tandoor": {
       "locked": {
-        "lastModified": 1735489990,
-        "narHash": "sha256-mWLUTuzwdobigxgantcm+0nan8WgpU3AbdvAVJLElo0=",
+        "lastModified": 1735563940,
+        "narHash": "sha256-tf2UYRWGoKsFf0d6xaPc/qWQubmzdxju/0GFYOLk4jc=",
         "owner": "jvanbruegge",
         "repo": "nixpkgs",
-        "rev": "ef700dbfe445ed93967ca7dab40104ef444d40b7",
+        "rev": "b36c4cd2261db2e718c988e8a3a41cc96ad8b2c8",
         "type": "github"
       },
       "original": {
