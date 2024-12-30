@@ -8,6 +8,12 @@
 
   nixpkgs.overlays = [ (_: prev: {
     immich = prev.immich.override { nodejs = prev.nodejs_20; };
+    triton-llvm = prev.triton-llvm.overrideAttrs (x: {
+      postPatch = x.postPatch + ''
+        rm mlir/test/Dialect/SPIRV/IR/availability.mlir
+        rm mlir/test/Dialect/SPIRV/IR/target-env.mlir
+      '';
+    });
   }) ];
 
   security.sudo.configFile =
