@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     linkwarden.url = "github:jvanbruegge/nixpkgs/linkwarden";
-    tandoor.url = "github:jvanbruegge/nixpkgs/fix-tandoor";
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -37,6 +36,7 @@
       nixosConfigurations = nixpkgs.lib.attrsets.mergeAttrsList [
         (mkServer "vps" (mode: [ ./settings.${mode}.nix ]))
         (mkServer "caladan" (_: []))
+        { nas = mkSystem "nas" "prod" []; }
       ];
 
       nixosModules = {
@@ -101,6 +101,14 @@
           profiles.system = {
             user = "root";
             path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.caladan;
+          };
+        };
+        nas = {
+          sshUser = "root";
+          hostname = "nas";
+          profiles.system = {
+            user = "root";
+            path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.nas;
           };
         };
       };
