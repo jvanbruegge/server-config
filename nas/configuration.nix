@@ -3,6 +3,7 @@
   imports = [
     ./services.nix
     ../settings.prod.nix
+    ../users.nix
   ];
 
   _module.args.server = "nas";
@@ -15,8 +16,6 @@
     Defaults lecture = never
   '';
   time.timeZone = "Europe/Berlin";
-
-  users = import ../users.nix;
 
   sops = {
     defaultSopsFile = ../secrets/nas.yaml;

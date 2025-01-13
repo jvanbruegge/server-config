@@ -4,6 +4,7 @@
     ./services.nix
     ./router.nix
     ../settings.prod.nix
+    ../users.nix
   ];
 
   security.sudo.configFile =
@@ -28,8 +29,6 @@
   };
 
   hardware.graphics.enable = true;
-
-  users = import ../users.nix;
 
   services.resolved.enable = true;
   networking.nameservers = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
