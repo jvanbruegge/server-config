@@ -10,6 +10,11 @@
 
   networking.hostId = "007f0200";
   boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs = {
+    forceImportRoot = false;
+    extraPools = [ "pool" ];
+  };
+  services.zfs.autoScrub.enable = true;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;

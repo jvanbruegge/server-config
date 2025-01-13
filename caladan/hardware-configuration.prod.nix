@@ -13,6 +13,7 @@
     extraPools = [ "zfspool" ];
   };
   networking.hostId = "24650b3a";
+  services.zfs.autoScrub.enable = true;
 
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
