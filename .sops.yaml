@@ -28,6 +28,10 @@ creation_rules:
       - *server_caladanDev
       - *server_vps
       - *server_vpsDev
+  - path_regex: secrets/nas[^/]+$
+    key_groups:
+    - pgp:
+      - *admin_jan
   - path_regex: tunnel/[^/]+\.conf$
     key_groups:
     - pgp:

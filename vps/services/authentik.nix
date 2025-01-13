@@ -1,15 +1,7 @@
-{ pkgs, lib, domain, config, authentik, ... }:
+{ pkgs, lib, domain, config, ... }:
 {
   services.authentik = {
     enable = true;
-    package = pkgs.authentik.overrideAttrs (prev: {
-      postPatch = prev.postPatch + ''
-        # This causes issues in systemd services
-        substituteInPlace lifecycle/ak \
-          --replace-fail 'printf' '>&2 printf' \
-          --replace-fail '>/dev/stderr' ""
-      '';
-    });
     outposts.ldap.enable = false;
   };
 

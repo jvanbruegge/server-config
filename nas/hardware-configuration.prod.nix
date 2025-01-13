@@ -4,34 +4,41 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  boot.supportedFilesystems = [ "zfs" ];
-  boot.zfs = {
-    forceImportRoot = false;
-    extraPools = [ "zfspool" ];
-  };
-  networking.hostId = "24650b3a";
-  services.zfs.autoScrub.enable = true;
-
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+  networking.hostId = "007f0200";
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs = {
+    forceImportRoot = false;
+    extraPools = [ "pool" ];
+  };
+  services.zfs.autoScrub.enable = true;
+
+  # Use the systemd-boot EFI boot loader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "uas" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/dabc4449-08e1-4c3c-b6e0-8d58d0201a0f";
+    { device = "/dev/disk/by-uuid/5fd913cf-f57d-447e-8404-9fd11e4519f5";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/000D-AC5F";
+    { device = "/dev/disk/by-uuid/55BC-DD5B";
       fsType = "vfat";
+      options = [ "fmask=0022" "dmask=0022" ];
+    };
+
+  fileSystems."/mnt/backup" =
+    { device = "/dev/disk/by-uuid/7d1296cb-62be-4b73-8a76-c6b40ac67f0d";
+      fsType = "ext4";
     };
 
   swapDevices = [ ];
@@ -41,7 +48,7 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp37s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp4s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

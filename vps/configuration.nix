@@ -8,6 +8,7 @@
       ./services/authentik.nix
       ./services/netbird.nix
       ./services/borgbackup.nix
+      ../users.nix
     ];
 
   _module.args.server = "vps";
@@ -20,8 +21,6 @@
     '';
 
   services.openssh.enable = true;
-
-  users = import ../users.nix;
 
   services.resolved.enable = true;
   networking.nameservers = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];

@@ -21,11 +21,13 @@ in {
 
           acls = {
             caladan = "req_ssl_sni -m end caladan.${domain}";
+            nas = "req_ssl_sni -m end nas.${domain}";
           };
 
           useBackend = [
             "caladanHttps if caladan"
-            "httpsLocal unless caladan"
+            "nasHttps if nas"
+            "httpsLocal unless caladan nas"
           ];
 
           extraConfig = ''
@@ -52,7 +54,11 @@ in {
           };
           acls.letsencrypt = "path_beg /.well-known/acme-challenge/";
           httpRequest = [ "redirect scheme https code 301 unless letsencrypt" ];
-          useBackend = [ "certbot if letsencrypt" ];
+          useBackend = [
+            "caladan if letsencrypt { hdr(host) -i -m end caladan.${domain} }"
+            "nas if letsencrypt { hdr(host) -i -m end nas.${domain} }"
+            "certbot if letsencrypt"
+          ];
         };
     };
     backends = {
@@ -64,7 +70,12 @@ in {
         servers = [ "caladanHttps caladan.net.cerberus-systems.de:443" ];
         mode = "tcp";
       };
+      nasHttps = {
+        servers = [ "nasHttps nas.net.cerberus-systems.de:443" ];
+        mode = "tcp";
+      };
       caladan.servers = [ "caladan caladan.net.cerberus-systems.de:80" ];
+      nas.servers = [ "nas nas.net.cerberus-systems.de:80" ];
     };
   };
 
