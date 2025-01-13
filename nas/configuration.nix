@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [
     ./services.nix
@@ -9,6 +9,10 @@
   _module.args.server = "nas";
 
   services.openssh.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    neovim
+  ];
 
   security.sudo.configFile = ''
     Defaults:root,%wheel env_keep+=LOCALE_ARCHIVE
