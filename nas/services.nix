@@ -7,7 +7,7 @@
     settings.domain = "nas.${domain}";
   };
 
-  networking.firewall.allowedUDPPorts = [ 53 1900 ];
+  networking.firewall.allowedUDPPorts = [ 53 ];
   services.blocky = {
     enable = true;
     settings = {
