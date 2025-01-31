@@ -102,6 +102,16 @@
         "force user" = "jellyfin";
         "force group" = "jellyfin";
       };
+      documentaries = {
+        path = "/data/documentaries";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "directory mask" = "0755";
+        "create mask" = "0644";
+        "force user" = "jellyfin";
+        "force group" = "jellyfin";
+      };
 
       audiobooks = {
         path = "/data/audiobooks";

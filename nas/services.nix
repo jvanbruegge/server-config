@@ -29,6 +29,32 @@
     };
   };
 
+  # Paperless
+  ingress.paperless = {
+    subdomain = "paperless";
+    port = 28981;
+  };
+  sops.secrets.paperless = {};
+  sops.secrets.paperlessPassword.owner = "paperless";
+  services.paperless = {
+    enable = true;
+    dataDir = "/mnt/data/paperless/data";
+    mediaDir = "/mnt/data/paperless/media";
+    consumptionDir = "/mnt/data/paperless/consume";
+    passwordFile = "/run/secrets/paperlessPassword";
+    settings = {
+      PAPERLESS_APPS = "allauth.socialaccount.providers.openid_connect";
+      PAPERLESS_SOCIAL_AUTO_SIGNUP = "True";
+      PAPERLESS_OCR_LANGUAGE = "deu+eng";
+      PAPERLESS_DEFAULT_HTTP_PROTOCOL = "https";
+    };
+  };
+  systemd.services.paperless-scheduler.serviceConfig.EnvironmentFile = "/run/secrets/paperless";
+  systemd.services.paperless-task-queue.serviceConfig.EnvironmentFile = "/run/secrets/paperless";
+  systemd.services.paperless-consumer.serviceConfig.EnvironmentFile = "/run/secrets/paperless";
+  systemd.services.paperless-web.serviceConfig.EnvironmentFile = "/run/secrets/paperless";
+
+  # Jellyfin
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   services.jellyfin = {
     enable = true;
@@ -41,6 +67,7 @@
     port = 8096;
   };
 
+  # Samba
   users.users =
     let mkUser = name: {
       name = name;
@@ -63,6 +90,7 @@
   services.samba = {
     enable = true;
     openFirewall = true;
+    nsswins = true;
 
     settings =
       let
@@ -100,6 +128,10 @@
         Stark = mkShare "/data/Stark" [ "gesa" ];
         eBooks = mkShare "/data/eBooks" all;
         Xerox = mkShare "/data/Xerox" all;
+        Paperless = mkShare "/data/paperless/consume" [ "dirk" "gesa" ] // {
+          "force user" = "paperless";
+          "force group" = "paperless";
+        };
 
         Filme = mkShare "/media/Filme" all;
         Bilder = mkShare "/media/Bilder" all;
