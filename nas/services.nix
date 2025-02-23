@@ -1,4 +1,4 @@
-{ lib, domain, ... }:
+{ lib, domain, config, ... }:
 {
   services.netbird.enable = true;
 
@@ -54,6 +54,22 @@
   systemd.services.paperless-consumer.serviceConfig.EnvironmentFile = "/run/secrets/paperless";
   systemd.services.paperless-web.serviceConfig.EnvironmentFile = "/run/secrets/paperless";
 
+  services.borgbackup.jobs.paperless = {
+    encryption.mode = "none";
+    repo = "/mnt/backup/borg/nas/paperless";
+    compression = "auto,zstd";
+    startAt = "daily";
+    prune.keep = {
+      daily = 7;
+      weekly = 4;
+      monthly = 6;
+    };
+    paths = [
+      config.services.paperless.dataDir
+      config.services.paperless.mediaDir
+    ];
+  };
+
   # Jellyfin
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   services.jellyfin = {
@@ -79,6 +95,32 @@
     dirk = mkUser "dirk";
     gesa = mkUser "gesa";
     jellyfin.extraGroups = [ "render" ];
+  };
+
+  services.borgbackup.jobs.samba = {
+    encryption.mode = "none";
+    repo = "/mnt/backup/borg/nas/samba";
+    compression = "auto,zstd";
+    startAt = "daily";
+    prune.keep = {
+      daily = 7;
+      weekly = 4;
+      monthly = 6;
+    };
+    exclude = [
+      "/mnt/data/*/trashbox"
+    ];
+    paths = [
+      "/mnt/data/Dirk"
+      "/mnt/data/Familie"
+      "/mnt/data/Gesa"
+      "/mnt/data/Jan"
+      "/mnt/data/Janco"
+      "/mnt/data/Kluthe"
+      "/mnt/data/Lina"
+      "/mnt/data/Stark"
+      "/mnt/media/Bilder"
+    ];
   };
 
   systemd.tmpfiles.settings = {
