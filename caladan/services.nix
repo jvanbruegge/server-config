@@ -22,6 +22,13 @@
     enable = true;
     settings.domain = "caladan.${domain}";
   };
+  services.borgbackup.jobs.immich = import ../backup.nix domain "caladan" "immich" {
+    paths = [
+      "/data/immich/library"
+      "/data/immich/upload"
+      "/data/immich/profile"
+    ];
+  };
 
   # Jellyfin
   networking.firewall.interfaces.br0.allowedUDPPorts = [ 1900 7359 ];

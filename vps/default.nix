@@ -7,6 +7,7 @@
   environment.systemPackages = with pkgs; [
     neovim
     borgbackup
+    tmux
   ];
 
 }

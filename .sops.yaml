@@ -20,13 +20,18 @@ creation_rules:
       age:
       - *server_caladan
       - *server_caladanDev
-  - path_regex: secrets/borg[^/]+$
+  - path_regex: secrets/borg_key_caladan[^/]*$
     key_groups:
     - pgp:
       - *admin_jan
       age:
       - *server_caladan
       - *server_caladanDev
+  - path_regex: secrets/borg\.key[^/]*$
+    key_groups:
+    - pgp:
+      - *admin_jan
+      age:
       - *server_vps
       - *server_vpsDev
   - path_regex: secrets/nas[^/]+$

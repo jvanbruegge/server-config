@@ -12,6 +12,7 @@
 
   environment.systemPackages = with pkgs; [
     neovim
+    tmux
   ];
 
   security.sudo.configFile = ''
@@ -42,6 +43,13 @@
       allowSubRepos = true;
       authorizedKeys = [ "" ];
       path = "/mnt/backup/borg/nas";
+    };
+    caladan = {
+      allowSubRepos = true;
+      authorizedKeys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICs57A0Q+rER6DUffcuYYmNJdK0ttmPgwPSWI3aIfXkC"
+      ];
+      path = "/mnt/backup/borg/caladan";
     };
   };
 

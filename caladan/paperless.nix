@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, domain, ... }:
 let
   scanbdConf = pkgs.writeText "scanbd.conf" ''
     global {
@@ -62,6 +62,13 @@ in {
       PAPERLESS_OCR_LANGUAGE = "deu+eng";
       PAPERLESS_ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http";
     };
+  };
+
+  services.borgbackup.jobs.paperless = import ../backup.nix domain "caladan" "paperless" {
+    paths = [
+      "/data/paperless/data"
+      "/data/paperless/media"
+    ];
   };
 
   services.udev.extraRules = ''
