@@ -33,33 +33,13 @@ in {
   networking.nat = {
     enable = true;
     internalInterfaces = [ "br0" ];
-    externalInterface = "ppp0";
+    externalInterface = "enp39s0";
   };
 
   networking.firewall = {
     allowedUDPPorts = [ 67 68 546 ];
     extraCommands = ''
       iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS  --clamp-mss-to-pmtu
-    '';
-  };
-
-  # WAN connection
-  services.pppd = {
-    enable = true;
-    peers.BT.config = ''
-      plugin pppoe.so
-
-      # network interface
-      enp39s0
-
-      +ipv6 ipv6cp-use-ipaddr
-
-      # login name
-      name "bthomehub@btbroadband.com"
-      password "BT"
-      persist
-      defaultroute
-      noauth
     '';
   };
 
