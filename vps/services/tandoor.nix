@@ -1,7 +1,8 @@
-{ pkgs, lib, domain, config, server, ... }:
+{ pkgs, lib, domain, config, tandoor, server, ... }:
 {
   services.tandoor-recipes = {
     enable = true;
+    package = tandoor.legacyPackages.x86_64-linux.tandoor-recipes;
     port = 8410;
     address = "127.0.0.1";
     extraConfig = {

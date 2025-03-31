@@ -75,7 +75,8 @@
         "deploy-rs": "deploy-rs",
         "linkwarden": "linkwarden",
         "nixpkgs": "nixpkgs",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "tandoor": "tandoor"
       }
     },
     "sops-nix": {
@@ -110,6 +111,22 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tandoor": {
+      "locked": {
+        "lastModified": 1743430471,
+        "narHash": "sha256-D1XMuLLr5DSrW7hinPtgJPAkrO8B0qqU5EEMOlk2fhY=",
+        "owner": "jvanbruegge",
+        "repo": "nixpkgs",
+        "rev": "9a2ab77f0b999d1f10738a1317d3e794bc71d097",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jvanbruegge",
+        "ref": "tandoor-update",
+        "repo": "nixpkgs",
         "type": "github"
       }
     },
