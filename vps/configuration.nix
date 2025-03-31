@@ -20,6 +20,7 @@
     Defaults lecture = never
     '';
 
+  services.fail2ban.enable = true;
   services.openssh.enable = true;
 
   services.resolved.enable = true;
