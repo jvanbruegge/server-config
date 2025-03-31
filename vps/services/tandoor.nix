@@ -18,7 +18,7 @@
 
   users.users.tandoor_recipes = {
     name = "tandoor_recipes";
-    group = "tandoor";
+    group = lib.mkForce "tandoor";
     isSystemUser = true;
   };
   users.groups.tandoor = {};
