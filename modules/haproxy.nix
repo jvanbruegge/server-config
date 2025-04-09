@@ -310,6 +310,15 @@ with lib;
       };
     };
 
+    systemd.timers.certbot = mkIf cfg.letsencrypt {
+      description = "certbot restart";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        Unit = "certbot.service";
+        OnCalendar = "daily";
+      };
+    };
+
     services.haproxy.settings = {
       frontends = mkIf cfg.settings.defaultFrontends {
         https = {
