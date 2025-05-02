@@ -39,7 +39,7 @@ in {
            bind = {
             address = "127.0.0.1";
             port = 4443;
-            extraOptions = "ssl crt /etc/letsencrypt/live/${cfg.settings.domain}/fullchain.pem";
+            extraOptions = "ssl crt /etc/letsencrypt/live/${cfg.settings.domain}/fullchain.pem accept-proxy alpn h2,http/1.1";
           };
           httpRequest = [ "set-header X-Forwarded-Proto https" ];
           useBackend = lib.attrsets.mapAttrsToList (name: x:
@@ -64,7 +64,7 @@ in {
     backends = {
       httpsLocal = {
         mode = "tcp";
-        servers = [ "httpsLocal 127.0.0.1:4443" ];
+        servers = [ "httpsLocal 127.0.0.1:4443 send-proxy-v2" ];
       };
       caladanHttps = {
         servers = [ "caladanHttps caladan.net.cerberus-systems.de:443" ];

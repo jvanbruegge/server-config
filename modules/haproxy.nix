@@ -34,9 +34,9 @@ let
       log global
       option httplog
       option forwardfor
-      timeout connect 5s
-      timeout client 50s
-      timeout server 50s
+      timeout connect 1d
+      timeout client 1d
+      timeout server 1d
 
     ${lib.strings.concatStrings (lib.attrsets.mapAttrsToList (name: x: "frontend ${name}\n${indentStr (mkFrontend x)}") cfg.frontends)}
     ${lib.strings.concatStrings (lib.attrsets.mapAttrsToList (name: x: "backend ${name}\n${indentStr (mkBackend x)}") cfg.backends)}
