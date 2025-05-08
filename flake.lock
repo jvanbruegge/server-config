@@ -40,16 +40,32 @@
     },
     "linkwarden": {
       "locked": {
-        "lastModified": 1744120560,
-        "narHash": "sha256-5ZO0fu+wHqPZhJ/iPWRttRIcNdhJfsbxUCeOpqKyfpM=",
+        "lastModified": 1746199189,
+        "narHash": "sha256-JFNKyy6Ovzl/qfxTcXVdn6Vepv5aMC1PQDZ0c4PGcgk=",
         "owner": "jvanbruegge",
         "repo": "nixpkgs",
-        "rev": "fa92d801b6487ae1e56f7fef84bc8920813bb7c6",
+        "rev": "2134a8f961bfd9859948c1f3a97f71753b2118f3",
         "type": "github"
       },
       "original": {
         "owner": "jvanbruegge",
         "ref": "linkwarden",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "netbird": {
+      "locked": {
+        "lastModified": 1746197750,
+        "narHash": "sha256-TvDzRnkoba5fb4RlvcUVHioOPNsy2EC3uYXl+p9ZtIc=",
+        "owner": "PatrickDaG",
+        "repo": "nixpkgs",
+        "rev": "f58c2a974835cec3755ff570a410ef3c9a4423b6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "PatrickDaG",
+        "ref": "fix-netbird",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -74,6 +90,7 @@
       "inputs": {
         "deploy-rs": "deploy-rs",
         "linkwarden": "linkwarden",
+        "netbird": "netbird",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix",
         "tandoor": "tandoor"
@@ -116,11 +133,11 @@
     },
     "tandoor": {
       "locked": {
-        "lastModified": 1744187620,
-        "narHash": "sha256-b8rHLr+w5TyXHDko1fli2+tM0Nnk4Q42OHkesF7j+JQ=",
+        "lastModified": 1746199866,
+        "narHash": "sha256-ZyqQQeHjeyvBOx3DVgPhQKOUzWrDHweWgz+aDpK86p8=",
         "owner": "jvanbruegge",
         "repo": "nixpkgs",
-        "rev": "2499c0c6847c3c76c8fe5ee3081d5691d712d2c0",
+        "rev": "1c73ac43d63197a65ad82b936415cbb6dedc32c9",
         "type": "github"
       },
       "original": {

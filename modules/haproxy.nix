@@ -269,6 +269,11 @@ with lib;
             default = 8080;
             description = "Port of the service to proxy to";
           };
+          proxyProtocol = mkOption {
+            type = types.bool;
+            default = false;
+            description = "Send proxy protocol";
+          };
         };
       });
       default = {};
@@ -356,7 +361,8 @@ with lib;
         };
       };
 
-      backends = builtins.mapAttrs (name: x: { servers = [ "${name} ${x.address}:${builtins.toString x.port}" ]; }) config.ingress
+      backends = builtins.mapAttrs (name: x: { servers = [
+        "${name} ${x.address}:${builtins.toString x.port}${lib.optionalString x.proxyProtocol " send-proxy-v2"}" ]; }) config.ingress
         // lib.attrsets.optionalAttrs cfg.letsencrypt {
           certbot.servers = [ "certbot 127.0.0.1:8403" ];
         };
