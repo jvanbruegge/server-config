@@ -57,6 +57,7 @@ in {
     passwordFile = "/run/secrets/paperlessPassword";
     address = "0.0.0.0";
     settings = {
+      PAPERLESS_URL = "https://paperless.caladan.${domain}";
       PAPERLESS_APPS = "allauth.socialaccount.providers.openid_connect";
       PAPERLESS_SOCIAL_AUTO_SIGNUP = "True";
       PAPERLESS_OCR_LANGUAGE = "deu+eng";
