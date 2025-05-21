@@ -61,7 +61,7 @@ in {
       PAPERLESS_APPS = "allauth.socialaccount.providers.openid_connect";
       PAPERLESS_SOCIAL_AUTO_SIGNUP = "True";
       PAPERLESS_OCR_LANGUAGE = "deu+eng";
-      PAPERLESS_ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http";
+      PAPERLESS_ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https";
     };
   };
 
