@@ -11,12 +11,12 @@
       postPatch = ''
         ${prev.postPatch}
 
-        substituteInPlace pages/api/v1/auth/*nextauth*.ts \
+        substituteInPlace apps/web/pages/api/v1/auth/*nextauth*.ts \
           --replace-fail 'AUTHENTIK_ISSUER,' 'AUTHENTIK_ISSUER, httpOptions: { timeout: Number(process.env.LINKWARDEN_OAUTH_TIMEOUT) },'
       '';
     });
     storageLocation = "/data/linkwarden";
-    secretsFile = "/run/secrets/linkwarden";
+    environmentFile = "/run/secrets/linkwarden";
     host = "0.0.0.0";
     openFirewall = true;
     database = {
