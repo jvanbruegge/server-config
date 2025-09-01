@@ -21,7 +21,7 @@
 
   users.users.authentik = {
     name = "authentik";
-    group = "tandoor";
+    group = "authentik";
     isSystemUser = true;
   };
   users.groups.authentik = {};

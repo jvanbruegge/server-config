@@ -13,7 +13,11 @@
     openFirewall = true;
     mediaLocation = "/data/immich";
     secretsFile = "/run/secrets/immich";
-    database.createDB = false;
+    database = {
+      createDB = false;
+      enableVectorChord = true;
+      enableVectors = false;
+    };
   };
   sops.secrets.immich = {};
   database.immich = {};

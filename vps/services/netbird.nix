@@ -58,18 +58,28 @@ in {
     forceSSL = false;
   };
 
+  systemd.services.netbird-relay.script =
+    let cfg = config.services.netbird.server.relay;
+    in lib.mkForce ''
+      export NB_AUTH_SECRET="$(<${cfg.authSecretFile})"
+      ${lib.getExe' cfg.package "netbird-relay"} -H 127.0.0.1:9400
+    '';
+
   services.netbird.server = {
     enable = true;
     domain = NETBIRD_DOMAIN;
 
     relay = {
+      enable = true;
       authSecretFile = "/run/secrets/relay_secret";
-      package = netbird.legacyPackages.x86_64-linux.netbird-server;
-      settings.NB_EXPOSED_ADDRESS = "rels://netbird.cerberus-systems.de:443";
+      package = pkgs.netbird-relay;
+      settings = {
+        NB_EXPOSED_ADDRESS = "rels://netbird.cerberus-systems.de:443/relay";
+      };
     };
     signal = {
       port = 10000;
-      package = netbird.legacyPackages.x86_64-linux.netbird-server;
+      package = pkgs.netbird-signal;
     };
     proxy = {
       domain = NETBIRD_DOMAIN;
@@ -81,7 +91,7 @@ in {
 
     management = {
       port = 10001;
-      package = netbird.legacyPackages.x86_64-linux.netbird-server;
+      package = pkgs.netbird-management;
 
       singleAccountModeDomain = "net.${domain}";
       dnsDomain = "net.${domain}";
@@ -137,21 +147,7 @@ in {
     dashboard = {
       enableNginx = true;
       domain = "localhost";
-      package = pkgs.netbird-dashboard.overrideAttrs (prev: rec {
-        version = "2.11.0";
-        src = pkgs.fetchFromGitHub {
-          owner = "netbirdio";
-          repo = "dashboard";
-          tag = "v${version}";
-          hash = "sha256-JHpFxWhN5ZXd0Yn0AY98pl/nrby+RsWO6l8qUospkak=";
-        };
-        npmDepsHash = "sha256-TELyc62l/8IaX9eL2lxRFth0AAZ4LXsV2WNzXSHRnTw=";
-        npmDeps = pkgs.fetchNpmDeps {
-          inherit src;
-          name = "${prev.pname}-${version}-npm-deps";
-          hash = npmDepsHash;
-        };
-      });
+      package = pkgs.netbird-dashboard;
       settings = {
         AUTH_AUTHORITY = "https://authentik.${domain}/application/o/netbird/";
         AUTH_SUPPORTED_SCOPES = "openid profile email offline_access api";

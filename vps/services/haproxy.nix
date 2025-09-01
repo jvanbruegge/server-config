@@ -44,7 +44,9 @@ in {
           httpRequest = [ "set-header X-Forwarded-Proto https" ];
           useBackend = lib.attrsets.mapAttrsToList (name: x:
             "${name} if { hdr(host) -i ${x.subdomain}.${cfg.settings.domain} }"
-          ) config.ingress;
+          ) config.ingress ++ [
+            "netbird if { path_beg /relay }"
+          ];
         };
 
         http = {
