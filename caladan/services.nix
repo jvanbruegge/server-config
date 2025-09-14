@@ -1,8 +1,9 @@
-{ lib, pkgs, domain, ... }:
+{ lib, pkgs, domain, booklore, ... }:
 {
   imports = [
     ./paperless.nix
     ./linkwarden.nix
+    "${booklore}/nixos/modules/services/web-apps/booklore.nix"
   ];
 
   services.netbird.enable = true;
@@ -32,6 +33,23 @@
       "/data/immich/upload"
       "/data/immich/profile"
     ];
+  };
+
+  ingress.booklore = {
+    subdomain = "booklore";
+    port = 8080;
+  };
+  sops.secrets.booklore_db_passwd = {
+    owner = "booklore";
+  };
+  networking.firewall.interfaces.wt0.allowedTCPPorts = [ 8080 ];
+  services.booklore = {
+    enable = true;
+    host = "0.0.0.0";
+    package = booklore.legacyPackages.x86_64-linux.booklore;
+    secretFiles = {
+      DATABASE_PASSWORD = "/run/secrets/booklore_db_passwd";
+    };
   };
 
   # Jellyfin
@@ -134,6 +152,17 @@
         "force user" = "audiobookshelf";
         "force group" = "audiobookshelf";
       };
+      ebooks = {
+        path = "/data/booklore";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "directory mask" = "0755";
+        "create mask" = "0644";
+        "force user" = "booklore";
+        "force group" = "booklore";
+      };
+
     };
   };
 }

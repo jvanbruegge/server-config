@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "booklore": {
+      "locked": {
+        "lastModified": 1757676490,
+        "narHash": "sha256-Dff6B26a24Kdk7i0VCcCILMMwX5xtuufiTOGRVENxYg=",
+        "owner": "jvanbruegge",
+        "repo": "nixpkgs",
+        "rev": "8f479fb30139a1f31ab1853fb45204a00ffe0e66",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jvanbruegge",
+        "ref": "booklore",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "deploy-rs": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -88,6 +104,7 @@
     },
     "root": {
       "inputs": {
+        "booklore": "booklore",
         "deploy-rs": "deploy-rs",
         "linkwarden": "linkwarden",
         "netbird": "netbird",
