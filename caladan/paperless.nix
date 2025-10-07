@@ -43,6 +43,12 @@ let
     mv "$file" "/data/paperless/consume/"
     rm -d $dir
   '';
+
+  epkowa' = pkgs.epkowa.override {
+    plugins = {
+      inherit (pkgs.epkowa-plugins) x770;
+    };
+  };
 in {
   ingress.paperless = {
     subdomain = "paperless";
@@ -86,7 +92,7 @@ in {
     "scanbd/scripts/scan.script".source = scanScript;
     "scanbd/scripts/test.script".source = "${pkgs.scanbd}/etc/scanbd/test.script";
     "scanbd/sane.d/dll.conf".text = "epkowa";
-    "scanbd/sane.d/epkowa.conf".source = "${pkgs.epkowa}/etc/sane.d/epkowa.conf";
+    "scanbd/sane.d/epkowa.conf".source = "${epkowa'}/etc/sane.d/epkowa.conf";
   };
 
   systemd.services.scanbd = {
@@ -108,7 +114,7 @@ in {
   nixpkgs.config.allowlistedLicenses = with lib.licenses; [ epson ];
   hardware.sane = {
     enable = true;
-    extraBackends = [ pkgs.epkowa ];
+    extraBackends = [ epkowa' ];
     disabledDefaultBackends = [
       "net" "abaton" "agfafocus" "apple" "artec" "artec_eplus48u"
       "as6e" "avision" "bh" "canon" "canon630u" "canon_dr"

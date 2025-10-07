@@ -20,7 +20,7 @@
     host = "0.0.0.0";
     openFirewall = true;
     database = {
-      createDB = false;
+      createLocally = false;
       host = "localhost";
     };
     environment = {
