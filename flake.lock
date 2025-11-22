@@ -2,11 +2,11 @@
   "nodes": {
     "booklore": {
       "locked": {
-        "lastModified": 1759836268,
-        "narHash": "sha256-PVYvIca2c7ngB1KgRB0n30QzJociqxBoDR+8q9Y0IZw=",
+        "lastModified": 1762010100,
+        "narHash": "sha256-UQAfVj1bHnq3aOkAckefXY5+61atp0ZOUCoU7ETglM0=",
         "owner": "jvanbruegge",
         "repo": "nixpkgs",
-        "rev": "b3f6a2595158fc8727497ec77e8897691ab12722",
+        "rev": "0da70f185354ef53271800663e26cdcd2c6fec71",
         "type": "github"
       },
       "original": {
@@ -25,11 +25,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1756719547,
-        "narHash": "sha256-N9gBKUmjwRKPxAafXEk1EGadfk2qDZPBQp4vXWPHINQ=",
+        "lastModified": 1762286984,
+        "narHash": "sha256-9I2H9x5We6Pl+DBYHjR1s3UT8wgwcpAH03kn9CqtdQc=",
         "owner": "serokell",
         "repo": "deploy-rs",
-        "rev": "125ae9e3ecf62fb2c0fd4f2d894eb971f1ecaed2",
+        "rev": "9c870f63e28ec1e83305f7f6cb73c941e699f74f",
         "type": "github"
       },
       "original": {
@@ -54,22 +54,6 @@
         "type": "github"
       }
     },
-    "linkwarden": {
-      "locked": {
-        "lastModified": 1759838276,
-        "narHash": "sha256-jYPZZSrdFtfEbSVjJcgsvNxwizBh+kiY488AKkBPUfc=",
-        "owner": "jvanbruegge",
-        "repo": "nixpkgs",
-        "rev": "5ae9c6959e5439e19a960ccd3fd361fa322397ee",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jvanbruegge",
-        "ref": "linkwarden",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "netbird": {
       "locked": {
         "lastModified": 1757098945,
@@ -88,16 +72,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1759841819,
-        "narHash": "sha256-5jSaKm9LM0BHVip2Idfy+h6Micl17z1/Yr/EJwPMNdQ=",
-        "owner": "jvanbruegge",
+        "lastModified": 1763678758,
+        "narHash": "sha256-+hBiJ+kG5IoffUOdlANKFflTT5nO3FrrR2CA3178Y5s=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f306b019205e9b5475ebb70e527d60a5827a35de",
+        "rev": "117cc7f94e8072499b0a7aa4c52084fa4e11cc9b",
         "type": "github"
       },
       "original": {
-        "owner": "jvanbruegge",
-        "ref": "epkowa-plugins",
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -106,7 +90,6 @@
       "inputs": {
         "booklore": "booklore",
         "deploy-rs": "deploy-rs",
-        "linkwarden": "linkwarden",
         "netbird": "netbird",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix"
@@ -119,11 +102,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1759635238,
-        "narHash": "sha256-UvzKi02LMFP74csFfwLPAZ0mrE7k6EiYaKecplyX9Qk=",
+        "lastModified": 1763607916,
+        "narHash": "sha256-VefBA1JWRXM929mBAFohFUtQJLUnEwZ2vmYUNkFnSjE=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "6e5a38e08a2c31ae687504196a230ae00ea95133",
+        "rev": "877bb495a6f8faf0d89fc10bd142c4b7ed2bcc0b",
         "type": "github"
       },
       "original": {

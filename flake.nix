@@ -2,8 +2,7 @@
   description = "My server configuration";
 
   inputs = {
-    nixpkgs.url = "github:jvanbruegge/nixpkgs/epkowa-plugins";
-    linkwarden.url = "github:jvanbruegge/nixpkgs/linkwarden";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     booklore.url = "github:jvanbruegge/nixpkgs/booklore";
     netbird.url = "github:PatrickDaG/nixpkgs/fix-netbird";
     deploy-rs = {

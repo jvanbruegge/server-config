@@ -1,13 +1,9 @@
-{ linkwarden, ... }:
+{ pkgs, ... }:
 
 {
-  imports = [
-    "${linkwarden}/nixos/modules/services/web-apps/linkwarden.nix"
-  ];
-
   services.linkwarden = {
     enable = true;
-    package = linkwarden.legacyPackages.x86_64-linux.linkwarden.overrideAttrs (prev: {
+    package = pkgs.linkwarden.overrideAttrs (prev: {
       postPatch = ''
         ${prev.postPatch}
 

@@ -46,7 +46,7 @@ let
 
   epkowa' = pkgs.epkowa.override {
     plugins = {
-      inherit (pkgs.epkowa-plugins) x770;
+      inherit (pkgs.epkowa.plugins) x770;
     };
   };
 in {
