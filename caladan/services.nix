@@ -3,6 +3,7 @@
   imports = [
     ./paperless.nix
     ./linkwarden.nix
+    ./cloud.nix
     "${booklore}/nixos/modules/services/web-apps/booklore.nix"
   ];
 
