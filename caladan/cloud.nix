@@ -7,6 +7,7 @@
     environment = {
       OC_OIDC_ISSUER = "https://authentik.${domain}/application/o/opencloud-web/";
       OC_EXCLUDE_RUN_SERVICES = "idp";
+      WEB_OIDC_CLIENT_ID = "OpenCloudDesktop";
       PROXY_TLS = "false";
       PROXY_USER_OIDC_CLAIM = "preferred_username";
       PROXY_USER_CS3_CLAIM = "username";
@@ -49,6 +50,7 @@
         frame-src = [
           "'self'"
           "blob:"
+          "https://authentik.${domain}"
           "https://embed.diagrams.net/"
         ];
         img-src = [
