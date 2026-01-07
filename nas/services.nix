@@ -7,7 +7,7 @@
     settings.domain = "nas.${domain}";
   };
 
-  networking.firewall.allowedUDPPorts = [ 53 ];
+  networking.firewall.allowedUDPPorts = [ 53 1900 7359 ];
   services.blocky = {
     enable = true;
     settings = {
@@ -72,7 +72,7 @@
   };
 
   # Jellyfin
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedTCPPorts = [ 80 443 8096 ];
   services.jellyfin = {
     enable = true;
     logDir = "/var/log/jellyfin";
