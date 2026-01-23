@@ -6,7 +6,7 @@
   };
 
   services.haproxy.settings = {
-    frontends.ldaps = {
+    frontends.ldapsFrontend = {
       mode = "tcp";
       bind.port = 636;
       defaultBackend = "ldaps";

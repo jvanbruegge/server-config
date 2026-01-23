@@ -35,7 +35,7 @@ in {
             tcp-request content accept if { req_ssl_hello_type 1 }
           '';
         };
-        httpsLocal = {
+        httpsLocalFrontend = {
            bind = {
             address = "127.0.0.1";
             port = 4443;

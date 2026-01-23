@@ -6,6 +6,7 @@
     address = "127.0.0.1";
     extraConfig = {
       TIMEZONE = "Europe/Berlin";
+      MEDIA_ROOT = "/var/lib/tandoor-recipes/media";
       POSTGRES_HOST = "127.0.0.1";
       POSTGRES_PORT = config.services.postgresql.port;
       POSTGRES_USER = "tandoor";
@@ -37,7 +38,7 @@
       }];
 
       locations = {
-        "/media/".alias = "/var/lib/tandoor-recipes/";
+        "/media/".alias = "/var/lib/tandoor-recipes/media";
         "/" = {
           extraConfig = ''
             proxy_set_header Host $host;
