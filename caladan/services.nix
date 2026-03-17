@@ -73,7 +73,7 @@
     enable = true;
     settings = {
       ports = {
-        dns = "192.168.0.1:53";
+        dns = "192.168.1.101:53";
         http = "127.0.0.1:4000";
       };
       upstreams.groups.default = [
@@ -85,7 +85,7 @@
       customDNS.zone = ''
         $ORIGIN caladan.cerberus-systems.de.
         * 3600 CNAME @
-        @ 3600 A 192.168.0.1
+        @ 3600 A 192.168.1.101
       '';
     };
   };
