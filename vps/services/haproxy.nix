@@ -99,9 +99,9 @@ in {
     port = 3000;
   };
 
-  ingress.booklore = {
-    subdomain = "booklore";
+  ingress.books = {
+    subdomain = "books";
     address = "caladan.net.${domain}";
-    port = 8080;
+    port = 10001;
   };
 }

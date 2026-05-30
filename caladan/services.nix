@@ -41,9 +41,19 @@
     enable = true;
     ip = "0.0.0.0";
     package = stump.legacyPackages.x86_64-linux.stump;
-    secretFiles = {
+    environmentFile = "/run/secrets/stump";
+    environment = {
+      STUMP_ALLOWED_ORIGINS = ''
+        "tauri://localhost","https://tauri.localhost","https://books.cerberus-systems.de"
+      '';
+      STUMP_TRUST_PROXY_HEADERS = "true";
+      SESSION_TTL = "2592000"; # 30 days
+      STUMP_OIDC_ENABLED = "true";
+      STUMP_OIDC_ISSUER_URL = "https://authentik.cerberus-systems.de/application/o/stump/";
+      STUMP_OIDC_DISBALE_LOCAL_AUTH = "true";
     };
   };
+  sops.secrets.stump = {};
 
   # Jellyfin
   networking.firewall.interfaces.br0.allowedUDPPorts = [ 1900 7359 ];
