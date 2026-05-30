@@ -1,10 +1,10 @@
-{ lib, pkgs, domain, booklore, ... }:
+{ lib, pkgs, domain, stump, ... }:
 {
   imports = [
     ./paperless.nix
     ./linkwarden.nix
     ./cloud.nix
-    "${booklore}/nixos/modules/services/web-apps/booklore.nix"
+    "${stump}/nixos/modules/services/web-apps/stump.nix"
   ];
 
   services.netbird.enable = true;
@@ -15,11 +15,7 @@
     openFirewall = true;
     mediaLocation = "/data/immich";
     secretsFile = "/run/secrets/immich";
-    database = {
-      createDB = false;
-      enableVectorChord = true;
-      enableVectors = false;
-    };
+    database.createDB = false;
   };
   sops.secrets.immich = {};
   database.immich = {};
@@ -36,20 +32,16 @@
     ];
   };
 
-  ingress.booklore = {
-    subdomain = "booklore";
-    port = 8080;
+  ingress.books = {
+    subdomain = "books";
+    port = 10001;
   };
-  sops.secrets.booklore_db_passwd = {
-    owner = "booklore";
-  };
-  networking.firewall.interfaces.wt0.allowedTCPPorts = [ 8080 ];
-  services.booklore = {
+  networking.firewall.interfaces.wt0.allowedTCPPorts = [ 10001 ];
+  services.stump = {
     enable = true;
-    host = "0.0.0.0";
-    package = booklore.legacyPackages.x86_64-linux.booklore;
+    ip = "0.0.0.0";
+    package = stump.legacyPackages.x86_64-linux.stump;
     secretFiles = {
-      DATABASE_PASSWORD = "/run/secrets/booklore_db_passwd";
     };
   };
 
@@ -101,7 +93,7 @@
     enable = true;
     openFirewall = true;
 
-    shares = {
+    settings = {
       movies = {
         path = "/data/movies";
         browseable = "yes";

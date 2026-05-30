@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    booklore.url = "github:jvanbruegge/nixpkgs/booklore";
+    stump.url = "github:jvanbruegge/nixpkgs/stump";
     netbird.url = "github:PatrickDaG/nixpkgs/fix-netbird";
     deploy-rs = {
       url = "github:serokell/deploy-rs";

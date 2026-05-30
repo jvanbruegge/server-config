@@ -8,7 +8,7 @@
         ${prev.postPatch}
 
         substituteInPlace apps/web/pages/api/v1/auth/*nextauth*.ts \
-          --replace-fail 'AUTHENTIK_ISSUER,' 'AUTHENTIK_ISSUER, httpOptions: { timeout: Number(process.env.LINKWARDEN_OAUTH_TIMEOUT) },'
+          --replace-fail '10000,' 'Number(process.env.LINKWARDEN_OAUTH_TIMEOUT),'
       '';
     });
     storageLocation = "/data/linkwarden";

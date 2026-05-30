@@ -137,7 +137,7 @@ in {
   sops.secrets.paperlessPassword.owner = "paperless";
   sops.secrets.paperless = {};
 
-  services.samba.shares.paperless = {
+  services.samba.settings.paperless = {
     path = "/data/paperless";
     browseable = "yes";
     "read only" = "no";
