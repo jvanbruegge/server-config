@@ -38,7 +38,7 @@
       }];
 
       locations = {
-        "/media/".alias = "/var/lib/tandoor-recipes/media";
+        "/media/recipes/".alias = "/var/lib/tandoor-recipes/media/recipes/";
         "/" = {
           extraConfig = ''
             proxy_set_header Host $host;

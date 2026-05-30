@@ -46,6 +46,7 @@ in {
             "${name} if { hdr(host) -i ${x.subdomain}.${cfg.settings.domain} }"
           ) config.ingress ++ [
             "netbird if { path_beg /relay }"
+            #"audiobookshelf if { path_beg /audiobookshelf }"
           ];
         };
 
