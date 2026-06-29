@@ -4,6 +4,7 @@
     ./paperless.nix
     ./linkwarden.nix
     ./cloud.nix
+    ./home-assistant.nix
     "${stump}/nixos/modules/services/web-apps/stump.nix"
   ];
 
