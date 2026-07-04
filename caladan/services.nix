@@ -1,11 +1,10 @@
-{ lib, pkgs, domain, stump, ... }:
+{ lib, pkgs, domain, ... }:
 {
   imports = [
     ./paperless.nix
     ./linkwarden.nix
     ./cloud.nix
     ./home-assistant.nix
-    "${stump}/nixos/modules/services/web-apps/stump.nix"
   ];
 
   services.netbird.enable = true;
@@ -40,8 +39,6 @@
   networking.firewall.interfaces.wt0.allowedTCPPorts = [ 10001 ];
   services.stump = {
     enable = true;
-    ip = "0.0.0.0";
-    package = stump.legacyPackages.x86_64-linux.stump;
     environmentFile = "/run/secrets/stump";
     environment = {
       STUMP_ALLOWED_ORIGINS = ''
