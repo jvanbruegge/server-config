@@ -36,13 +36,12 @@
     subdomain = "books";
     port = 10001;
   };
-  networking.firewall.interfaces.wt0.allowedTCPPorts = [ 10001 ];
   services.stump = {
     enable = true;
     environmentFile = "/run/secrets/stump";
     environment = {
       STUMP_ALLOWED_ORIGINS = ''
-        "tauri://localhost","https://tauri.localhost","https://books.cerberus-systems.de"
+        "tauri://localhost","https://tauri.localhost","https://books.caladan.cerberus-systems.de"
       '';
       STUMP_TRUST_PROXY_HEADERS = "true";
       SESSION_TTL = "2592000"; # 30 days

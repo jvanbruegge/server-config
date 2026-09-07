@@ -99,10 +99,4 @@ in {
     address = "caladan.net.${domain}";
     port = 3000;
   };
-
-  ingress.books = {
-    subdomain = "books";
-    address = "caladan.net.${domain}";
-    port = 10001;
-  };
 }
