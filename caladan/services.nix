@@ -153,14 +153,14 @@
         "force group" = "audiobookshelf";
       };
       ebooks = {
-        path = "/data/booklore";
+        path = "/data/books";
         browseable = "yes";
         "read only" = "no";
         "guest ok" = "no";
         "directory mask" = "0755";
         "create mask" = "0644";
-        "force user" = "booklore";
-        "force group" = "booklore";
+        "force user" = "stump";
+        "force group" = "stump";
       };
 
     };
