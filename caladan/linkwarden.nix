@@ -7,8 +7,8 @@
       postPatch = ''
         ${prev.postPatch}
 
-        substituteInPlace apps/web/pages/api/v1/auth/*nextauth*.ts \
-          --replace-fail '10000,' 'Number(process.env.LINKWARDEN_OAUTH_TIMEOUT),'
+        substituteInPlace apps/web/lib/api/authProviders.ts \
+          --replace-fail '10000' 'Number(process.env.LINKWARDEN_OAUTH_TIMEOUT ?? 10000)'
       '';
     });
     storageLocation = "/data/linkwarden";
