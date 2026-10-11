@@ -7,14 +7,10 @@
     ];
     customComponents = with pkgs.home-assistant-custom-components; [
       auth_oidc
+      dwd
     ];
     config = {
       default_config = {};
-      http = {
-        server_host = "127.0.0.1";
-        trusted_proxies = [ "127.0.0.1" "::1" ];
-        use_x_forwarded_for = true;
-      };
       "automation ui" = "!include automations.yaml";
       auth_oidc = {
         client_id = "9QlffQMkanh5cR3pMOT2Df5aOCoL4E7uJ8fxkSv2";
