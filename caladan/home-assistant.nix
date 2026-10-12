@@ -19,6 +19,32 @@
         features.default_redirect = true;
         roles.admin = "jellyfin-admins";
       };
+      template = [
+        {
+          trigger = [
+            {
+              platform = "time_pattern";
+              hours = "/1"; #Update every hour
+            }
+            {
+              platform = "homeassistant";
+              event = "start";
+            }
+          ];
+          action = [{
+            service = "weather.get_forecasts";
+            data.type = "daily";
+            target.entity_id = "weather.munchen_stadt";
+            response_variable = "daily";
+          }];
+          sensor = [{
+            name = "Weather Daily Forecast";
+            unique_id = "weather_daily_forecast";
+            state = "{{ daily['weather.munchen_stadt'].forecast[0].temperature }}";
+            attributes.forecast = "{{ daily['weather.munchen_stadt'].forecast }}";
+          }];
+        }
+      ];
     };
   };
 
