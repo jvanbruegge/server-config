@@ -12,9 +12,13 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-penpot = {
+      url = "github:jvanbruegge/nix-penpot/fix-hashes";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, deploy-rs, sops-nix, ... }:
+  outputs = inputs@{ self, nixpkgs, deploy-rs, sops-nix, nix-penpot, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages."${system}";
@@ -23,6 +27,8 @@
         specialArgs = inputs;
         modules = [
           sops-nix.nixosModules.sops
+          nix-penpot.nixosModules.default
+          { nixpkgs.overlays = [ nix-penpot.overlays.default ]; }
           ./modules.nix
           ./${name}/default.nix
           ./${name}/hardware-configuration.${mode}.nix

@@ -1,5 +1,29 @@
 {
   "nodes": {
+    "clj-nix": {
+      "inputs": {
+        "devshell": "devshell",
+        "nix-fetcher-data": "nix-fetcher-data",
+        "nixpkgs": [
+          "nix-penpot",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776760934,
+        "narHash": "sha256-WVzvTigFwWcJ0VkAFMzA3jE8kbHGahCJ0FJFqVYhPqM=",
+        "owner": "jlesquembre",
+        "repo": "clj-nix",
+        "rev": "2b1290ee56e9bbd50e9b5874c985d34ad2f1b458",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jlesquembre",
+        "repo": "clj-nix",
+        "rev": "2b1290ee56e9bbd50e9b5874c985d34ad2f1b458",
+        "type": "github"
+      }
+    },
     "deploy-rs": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -22,6 +46,28 @@
         "type": "github"
       }
     },
+    "devshell": {
+      "inputs": {
+        "nixpkgs": [
+          "nix-penpot",
+          "clj-nix",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1768818222,
+        "narHash": "sha256-460jc0+CZfyaO8+w8JNtlClB2n4ui1RbHfPTLkpwhU8=",
+        "owner": "numtide",
+        "repo": "devshell",
+        "rev": "255a2b1725a20d060f566e4755dbf571bbbb5f76",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "devshell",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -35,6 +81,24 @@
       "original": {
         "owner": "edolstra",
         "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": "nixpkgs-lib"
+      },
+      "locked": {
+        "lastModified": 1719745305,
+        "narHash": "sha256-xwgjVUpqSviudEkpQnioeez1Uo2wzrsMaJKJClh+Bls=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "c3c5ecc05edc7dafba779c6c1a61cd08ac6583e9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
         "type": "github"
       }
     },
@@ -54,13 +118,60 @@
         "type": "github"
       }
     },
+    "nix-fetcher-data": {
+      "inputs": {
+        "flake-parts": "flake-parts",
+        "nixpkgs": [
+          "nix-penpot",
+          "clj-nix",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1755022803,
+        "narHash": "sha256-/QtBdVfZlrRJW5enUoWlBE2wrLXJBMJ45X0rZh0jiaU=",
+        "owner": "jlesquembre",
+        "repo": "nix-fetcher-data",
+        "rev": "9da3926b1459d6ff15268072d1c51351b82811b9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jlesquembre",
+        "repo": "nix-fetcher-data",
+        "type": "github"
+      }
+    },
+    "nix-penpot": {
+      "inputs": {
+        "clj-nix": "clj-nix",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "penpot": "penpot",
+        "penpot-files": "penpot-files"
+      },
+      "locked": {
+        "lastModified": 1791900118,
+        "narHash": "sha256-mvH0yK3jA3CKGnm5x1rRIXGZDUv3stfWxEQT7Kc0fkI=",
+        "owner": "jvanbruegge",
+        "repo": "nix-penpot",
+        "rev": "69e089a45ae5eaaeefde47e38d7d18ff9ac377fb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jvanbruegge",
+        "ref": "fix-hashes",
+        "repo": "nix-penpot",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1791594108,
-        "narHash": "sha256-XK4KceonkwD8LuMAt/vNrz982mXJM5jeHAxMwsUXXAQ=",
+        "lastModified": 1791734076,
+        "narHash": "sha256-i5qk1kLiit98rRbh1AXmWBNT9QXC/y4l5Wk/u5EdpDQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "6510408d147d8c5e6d76043e899e9251756f6a75",
+        "rev": "7fd4004d0511991fff3a0524856a9be09e28c5f0",
         "type": "github"
       },
       "original": {
@@ -70,10 +181,57 @@
         "type": "github"
       }
     },
+    "nixpkgs-lib": {
+      "locked": {
+        "lastModified": 1717284937,
+        "narHash": "sha256-lIbdfCsf8LMFloheeE6N31+BMIeixqyQWbSr2vk79EQ=",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/eb9ceca17df2ea50a250b6b27f7bf6ab0186f198.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/eb9ceca17df2ea50a250b6b27f7bf6ab0186f198.tar.gz"
+      }
+    },
+    "penpot": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787817613,
+        "narHash": "sha256-9WZxy24W4dmniPWdTf5TFhAYqNH/YpSVEiHDCxDR6N4=",
+        "owner": "penpot",
+        "repo": "penpot",
+        "rev": "1d2c37e52c733f74017d90b0fd1ae2d074a5c33d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "penpot",
+        "ref": "2.17.2",
+        "repo": "penpot",
+        "type": "github"
+      }
+    },
+    "penpot-files": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788774984,
+        "narHash": "sha256-xNgDTAIYupQciwKWGVVjtYdC8d0QM4nQgBOMNxkVKxw=",
+        "owner": "penpot",
+        "repo": "penpot-files",
+        "rev": "9b4e388b60af7bafa37c0603d94a48773f928f17",
+        "type": "github"
+      },
+      "original": {
+        "owner": "penpot",
+        "ref": "main",
+        "repo": "penpot-files",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "deploy-rs": "deploy-rs",
         "netbird": "netbird",
+        "nix-penpot": "nix-penpot",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix"
       }

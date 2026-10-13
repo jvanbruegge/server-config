@@ -5,6 +5,7 @@
     ./linkwarden.nix
     ./cloud.nix
     ./home-assistant.nix
+    ./penpot.nix
   ];
 
   services.netbird.enable = true;
