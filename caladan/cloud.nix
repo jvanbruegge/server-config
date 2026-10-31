@@ -1,7 +1,8 @@
-{ domain, ... }:
+{ domain, pkgs, ... }:
 {
   services.opencloud = {
     enable = true;
+    package = pkgs.opencloud;
     url = "https://cloud.caladan.${domain}";
     stateDir = "/data/opencloud";
     environment = {
