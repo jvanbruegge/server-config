@@ -36,7 +36,6 @@
       };
       mkServer = name: modules: {
         "${name}" = mkSystem name "prod" (modules "prod");
-        "${name}Dev" = mkSystem name "dev" (modules "dev");
       };
     in {
       nixosConfigurations = nixpkgs.lib.attrsets.mergeAttrsList [
@@ -77,28 +76,12 @@
       };
 
       deploy.nodes = {
-        vpsDev = {
-          sshUser = "root";
-          hostname = "vps-dev";
-          profiles.system = {
-            user = "root";
-            path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.vpsDev;
-          };
-        };
         vps = {
           sshUser = "root";
           hostname = "vps";
           profiles.system = {
             user = "root";
             path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.vps;
-          };
-        };
-        caladanDev = {
-          sshUser = "root";
-          hostname = "vps-dev";
-          profiles.system = {
-            user = "root";
-            path = deploy-rs.lib."${system}".activate.nixos self.nixosConfigurations.caladanDev;
           };
         };
         caladan = {
